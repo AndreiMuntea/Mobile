@@ -1,5 +1,6 @@
-package com.andrei.b_project;
+package com.andrei.b_project.views;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -7,6 +8,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.andrei.b_project.R;
 import com.andrei.b_project.domain.User;
 import com.andrei.b_project.net.user.TokenDTO;
 import com.andrei.b_project.net.user.UserClient;
@@ -122,9 +124,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void handleLoginSuccessful(TokenDTO tokenDTO) {
         Log.d(TAG, "Successful login");
-
-        Toast toast = Toast.makeText(this, "SUCCESSFUL LOGIN " + tokenDTO.getToken(), Toast.LENGTH_SHORT);
-        toast.show();
+        startActivity(new Intent(this, BooksActivity.class));
     }
 
     private void handleSignUpSuccessful(TokenDTO tokenDTO) {

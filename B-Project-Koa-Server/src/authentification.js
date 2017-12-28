@@ -36,7 +36,7 @@ export class AuthentificationRouter extends Router{
         if(!(requestBody.password === user.password)){
             setStatus(context, BAD_REQUEST, {error: "Invalid password"});
             return;
-        }
+        };
 
         setStatus(context, OK, {token: '1'});
     }

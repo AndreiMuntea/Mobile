@@ -7,6 +7,7 @@ import Convert from 'koa-convert';
 import http from 'http';
 import SocketIo from 'socket.io';
 import {AuthentificationRouter} from './authentification';
+import {BooksRouter} from './books';
 
 // App
 const app = new Koa();
@@ -16,14 +17,18 @@ const connections = {};
 
 // Database stuffs
 const usersDatabase = new DataStore({filename: '../B-Project-Storage/storage/users.json', autoload: true});
+const booksDatabase = new DataStore({filename: '../B-Project-Storage/storage/books.json', autoload: true});
 
 // Custom routes
 const authentificationRouter = new AuthentificationRouter({usersDatabase});
+const booksRouter = new BooksRouter({booksDatabase});
+
 
 app.use(BodyParser());
 app.use(Convert(Cors()));
 
 app.use(authentificationRouter.routes()).use(authentificationRouter.allowedMethods());
+app.use(booksRouter.routes()).use(booksRouter.allowedMethods());
 
 
 // serverSocket.on('connection', (socket) => {
