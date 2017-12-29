@@ -18,11 +18,12 @@ const connections = {};
 // Database stuffs
 const usersDatabase = new DataStore({filename: '../B-Project-Storage/storage/users.json', autoload: true});
 const booksDatabase = new DataStore({filename: '../B-Project-Storage/storage/books.json', autoload: true});
+const tagsDatabase  = new DataStore({filename: '../B-Project-Storage/storage/tags.json', autoload: true});
+const bookTagsDatabase  = new DataStore({filename: '../B-Project-Storage/storage/bookTags.json', autoload: true});
 
 // Custom routes
 const authentificationRouter = new AuthentificationRouter({usersDatabase});
-const booksRouter = new BooksRouter({booksDatabase});
-
+const booksRouter = new BooksRouter({booksDatabase, tagsDatabase, bookTagsDatabase});
 
 app.use(BodyParser());
 app.use(Convert(Cors()));
