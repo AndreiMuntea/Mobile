@@ -16,3 +16,13 @@ export const getDate = (date) => {
 
     return null;
 }
+
+export const getInt = (number) => {
+    var value = parseInt(number);
+
+    if(isNaN(value)){
+        return null;
+    }
+
+    return value;
+}

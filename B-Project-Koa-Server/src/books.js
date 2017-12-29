@@ -1,5 +1,5 @@
 import Router from 'koa-router';
-import {setStatus, getDate, OK, BAD_REQUEST} from "./utils.js";
+import {setStatus, getDate, getInt, OK, BAD_REQUEST} from "./utils.js";
 
 
 export class BooksRouter extends Router{
@@ -9,6 +9,8 @@ export class BooksRouter extends Router{
         this.booksDatabase = args.booksDatabase;
         this.tagsDatabase = args.tagsDatabase;
         this.bookTagsDatabase = args.bookTagsDatabase;
+        this.userBooksDatabase = args.userBooksDatabase;
+        this.usersDatabase = args.usersDatabase;
 
         this.put('/books/add', async (context, next)=>{
             await this.handleAddBook(context);
@@ -44,7 +46,11 @@ export class BooksRouter extends Router{
 
         this.delete('/books/delete/:bookId', async(context, next)=>{
             await this.handleDeleteBook(context);
-        })
+        });
+
+        this.put('/books/rate/:username/:bookId', async(context, next)=>{
+            await this.handleRateBook(context);
+        });
     }
 
     async handleAddBook(context){
@@ -177,7 +183,47 @@ export class BooksRouter extends Router{
 
         await this.bookTagsDatabase.remove({bookId:bookId}, {multi:true});
         await this.booksDatabase.remove({_id:bookId}, {multi:true});
+        await this.userBooksDatabase.remove({_bookId:bookId}, {multi:true});
 
         setStatus(context, OK, {});
+    }
+
+    async handleRateBook(context){
+        var bookId = context.params.bookId;
+        var username = context.params.username;
+        var requestBody = context.request.body;
+
+        if (!requestBody.rating){
+            setStatus(context, BAD_REQUEST, {error: "No rating found!"});
+            return;
+        }
+
+        var value = getInt(requestBody.rating);
+        if (value == null || value < 1 || value > 5){
+            setStatus(context, BAD_REQUEST, {error: "Rating should be an integer between 1 and 5!"});
+            return;
+        }
+        
+        var user = await this.usersDatabase.findOne({username:username});
+        if (user == null){
+            setStatus(context, BAD_REQUEST, {error: "No user found!"});
+            return;
+        }
+
+        var book = await this.booksDatabase.findOne({_id:bookId});
+        if (book == null){
+            setStatus(context, BAD_REQUEST, {error: "No book found!"});
+            return;
+        }
+
+        var rating = await this.userBooksDatabase.findOne({username:username, bookId:bookId});
+        if (rating == null){
+            await this.userBooksDatabase.insert({username:username, bookId:bookId, raiting:value});
+        } else{
+            this.userBooksDatabase.update({_id: rating["_id"]}, {$set: {rating: value} } , function(err, numReplaced){});
+        }
+
+        var retRating = await this.userBooksDatabase.findOne({username:username, bookId:bookId});
+        setStatus(context, BAD_REQUEST, {rating:retRating});
     }
 }
