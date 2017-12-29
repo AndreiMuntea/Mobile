@@ -1,5 +1,5 @@
 import Router from 'koa-router';
-import {setStatus, OK, BAD_REQUEST} from "./utils.js";
+import {setStatus, getDate, OK, BAD_REQUEST} from "./utils.js";
 
 
 export class BooksRouter extends Router{
@@ -41,10 +41,16 @@ export class BooksRouter extends Router{
         this.get('/tags/get/book/:bookId', async(context, next)=>{
             await this.handleGetTagsForBook(context);
         });
+
+        this.delete('/books/delete/:bookId', async(context, next)=>{
+            await this.handleDeleteBook(context);
+        })
     }
 
     async handleAddBook(context){
         var requestBody = context.request.body;
+
+        console.log(requestBody);
 
         if (!requestBody.title || !requestBody.author || !requestBody.date || !requestBody.description){
             setStatus(context, BAD_REQUEST, {error: "A book should have title, author, date and description!"});
@@ -164,5 +170,14 @@ export class BooksRouter extends Router{
         var tags = await this.bookTagsDatabase.cfind({bookId:bookId}).projection({tag:1, _id:0}).exec();
         
         setStatus(context, OK, {tags: tags});
+    }
+
+    async handleDeleteBook(context){
+        var bookId = context.params.bookId;
+
+        await this.bookTagsDatabase.remove({bookId:bookId}, {multi:true});
+        await this.booksDatabase.remove({_id:bookId}, {multi:true});
+
+        setStatus(context, OK, {});
     }
 }
