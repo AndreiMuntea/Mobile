@@ -4,46 +4,35 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.widget.Toast;
 
 import com.andrei.b_project.R;
 import com.andrei.b_project.net.book.BookClient;
 import com.andrei.b_project.net.book.BookDTO;
-import com.andrei.b_project.net.book.BooksList;
+import com.andrei.b_project.net.book.BookDetails;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 
-public class BooksActivity extends AppCompatActivity {
-
-    private static final String TAG = BooksActivity.class.getSimpleName();
-
-    private BookClient bookClient;
+public class SingleBookActivity extends AppCompatActivity {
+    private static final String TAG = SingleBookActivity.class.getSimpleName();
 
     private CompositeDisposable disposables = new CompositeDisposable();
-
-    private ListView listView;
+    private BookClient bookClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_books);
+        setContentView(R.layout.activity_single_book);
 
-        this.listView = findViewById(R.id.booksListView);
+        Bundle bundle = getIntent().getExtras();
+        String bookId = bundle.getString("bookId");
+
         this.bookClient = new BookClient(this);
-        getAll();
+        getBook(bookId);
 
-        listView.setOnItemClickListener((adapterView, view, i, l) -> {
-            BookDTO bookDTO = (BookDTO) adapterView.getItemAtPosition(i);
-
-            Intent intent = new Intent(this, SingleBookActivity.class);
-            intent.putExtra("bookId", bookDTO.getId());
-            startActivity(intent);
-        });
-
-        Log.d(TAG, "The onCreate() event");
+        Log.d(TAG, "The OnCreate() event");
     }
 
     /**
@@ -98,20 +87,29 @@ public class BooksActivity extends AppCompatActivity {
         Log.d(TAG, "The onDestroy() event");
     }
 
-    private void getAll(){
-        disposables.add(bookClient.getAllBooks()
+    public void getBook(String bookId){
+
+        disposables.add(bookClient.getBook(bookId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        this::handleGetAll
+                        this::handleGetBook,
+                        this::handleError
                 )
         );
     }
 
-    private void handleGetAll(BooksList books){
-        Log.d(TAG, "GetAll books");
+    public void handleGetBook(BookDetails book){
+        Log.d(TAG, book.getBook().toString());
+    }
 
-        ArrayAdapter<BookDTO> adapter = new ArrayAdapter<BookDTO>(this, R.layout.activity_books_list_view, books.getBooks());
-        this.listView.setAdapter(adapter);
+
+    private void handleError(Throwable error) {
+        Log.d(TAG, error.getMessage());
+
+        Toast toast = Toast.makeText(this, "Bad request!", Toast.LENGTH_SHORT);
+        toast.show();
+
+        startActivity(new Intent(this, BooksActivity.class));
     }
 }

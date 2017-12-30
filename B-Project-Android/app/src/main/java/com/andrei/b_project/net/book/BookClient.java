@@ -34,4 +34,8 @@ public class BookClient {
     public Observable<BooksList> getAllBooks(){
         return bookResource.getAllBooks();
     }
+
+    public Observable<BookDetails> getBook(String bookId){
+        return bookResource.getBook(bookId);
+    }
 }

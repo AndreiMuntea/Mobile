@@ -20,6 +20,10 @@ export class BooksRouter extends Router{
             await this.handleGetAllBooks(context);
         });
 
+        this.get('/books/get/:bookId', async(context, next)=>{
+            await this.handleGetSpecificBook(context);
+        });
+
         this.get('/books/get/author/:authorName', async(context, next) =>{
             await this.handleGetAllByAuthor(context);
         });
@@ -193,6 +197,8 @@ export class BooksRouter extends Router{
         var username = context.params.username;
         var requestBody = context.request.body;
 
+        console.log("Rate book", bookId, username);
+
         if (!requestBody.rating){
             setStatus(context, BAD_REQUEST, {error: "No rating found!"});
             return;
@@ -203,6 +209,8 @@ export class BooksRouter extends Router{
             setStatus(context, BAD_REQUEST, {error: "Rating should be an integer between 1 and 5!"});
             return;
         }
+
+        console.log("value", value);
         
         var user = await this.usersDatabase.findOne({username:username});
         if (user == null){
@@ -217,13 +225,44 @@ export class BooksRouter extends Router{
         }
 
         var rating = await this.userBooksDatabase.findOne({username:username, bookId:bookId});
-        if (rating == null){
-            await this.userBooksDatabase.insert({username:username, bookId:bookId, raiting:value});
-        } else{
-            this.userBooksDatabase.update({_id: rating["_id"]}, {$set: {rating: value} } , function(err, numReplaced){});
+        console.log("rating", rating);
+
+        if (rating != null){
+            await this.userBooksDatabase.remove({_id:rating["_id"]});
         }
+        await this.userBooksDatabase.insert({username:username, bookId:bookId, rating:value});
 
         var retRating = await this.userBooksDatabase.findOne({username:username, bookId:bookId});
-        setStatus(context, BAD_REQUEST, {rating:retRating});
+        setStatus(context, OK, {rating: retRating});
+    }
+
+    async handleGetSpecificBook(context){
+        var bookId = context.params.bookId;
+        var book = await this.booksDatabase.findOne({_id:bookId});
+
+        if (book == null){
+            setStatus(context, BAD_REQUEST, {error: "No book found!"});
+            return;
+        }
+
+        var tags = await this.bookTagsDatabase.cfind({bookId:bookId}).projection({tag:1, _id:0}).exec();
+        var rating = await this.calculateRating(bookId);
+
+        setStatus(context, OK, {book:book, rating:rating, tags:tags});
+    }
+
+    async calculateRating(bookId){
+        var ratings = await this.userBooksDatabase.cfind({bookId:bookId}).exec();
+
+        if (ratings.length == 0){
+            return 0.0;
+        }
+        
+        var r = 0.0;
+        for(let i = 0; i < ratings.length; ++i){
+            r = r + ratings[i]["rating"];
+        }
+
+        return r / ratings.length;
     }
 }

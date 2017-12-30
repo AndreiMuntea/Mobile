@@ -1,1 +1,4 @@
-{"username":"John2","bookId":"3cTdVBR9IWbUqZaV","raiting":3,"_id":"GENREQygkhXBF46G"}
+{"username":"John2","bookId":"3cTdVBR9IWbUqZaV","rating":5,"_id":"GENREQygkhXBF46G"}
+{"username":"John","bookId":"3cTdVBR9IWbUqZaV","rating":3,"_id":"GENREQygkhXBF46G"}
+{"$$deleted":true,"_id":"3wgEXcyeY4bhjluZ"}
+{"username":"John","bookId":"3cTdVBR9IWbUqZaV","rating":2,"_id":"f8qdgHKJgQC2JfkM"}

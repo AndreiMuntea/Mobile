@@ -124,7 +124,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void handleLoginSuccessful(TokenDTO tokenDTO) {
         Log.d(TAG, "Successful login");
-        startActivity(new Intent(this, BooksActivity.class));
+        startActivity(new Intent(this, MainMenuActivity.class));
     }
 
     private void handleSignUpSuccessful(TokenDTO tokenDTO) {
