@@ -13,12 +13,12 @@ public class BookDetails {
     private List<TagDTO> tags;
 
     @SerializedName("rating")
-    private Double rating;
+    private Float rating;
 
     @SerializedName("book")
     private BookDTO book;
 
-    public BookDetails(List<TagDTO> tags, Double rating, BookDTO book) {
+    public BookDetails(List<TagDTO> tags, Float rating, BookDTO book) {
         this.tags = tags;
         this.rating = rating;
         this.book = book;
@@ -35,11 +35,11 @@ public class BookDetails {
         this.tags = tags;
     }
 
-    public Double getRating() {
+    public Float getRating() {
         return rating;
     }
 
-    public void setRating(Double rating) {
+    public void setRating(Float rating) {
         this.rating = rating;
     }
 

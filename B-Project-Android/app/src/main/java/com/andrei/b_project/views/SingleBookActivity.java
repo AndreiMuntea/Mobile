@@ -4,6 +4,9 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.RatingBar;
 import android.widget.Toast;
 
 import com.andrei.b_project.R;
@@ -11,15 +14,21 @@ import com.andrei.b_project.net.book.BookClient;
 import com.andrei.b_project.net.book.BookDTO;
 import com.andrei.b_project.net.book.BookDetails;
 
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 
 public class SingleBookActivity extends AppCompatActivity {
     private static final String TAG = SingleBookActivity.class.getSimpleName();
+    private static final SimpleDateFormat FORMAT = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
 
     private CompositeDisposable disposables = new CompositeDisposable();
     private BookClient bookClient;
+
+    private BookDTO book;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +110,13 @@ public class SingleBookActivity extends AppCompatActivity {
 
     public void handleGetBook(BookDetails book){
         Log.d(TAG, book.getBook().toString());
+        this.book = book.getBook();
+
+        ((EditText) findViewById(R.id.titleTextField)).setText(this.book.getTitle());
+        ((EditText) findViewById(R.id.authorTextField)).setText(this.book.getAuthor());
+        ((EditText) findViewById(R.id.publicationDateTextField)).setText(FORMAT.format(this.book.getDate()));
+        ((EditText) findViewById(R.id.descriptionTextField)).setText(this.book.getDescription());
+        ((RatingBar) findViewById(R.id.ratingBar)).setRating(book.getRating());
     }
 
 

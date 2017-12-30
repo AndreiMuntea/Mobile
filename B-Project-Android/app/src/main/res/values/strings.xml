@@ -5,4 +5,10 @@
     <string name="signup">Signup</string>
     <string name="login">Login</string>
     <string name="username">Username</string>
+    <string name="title">Title</string>
+    <string name="author">Author</string>
+    <string name="publication_date">Publication Date</string>
+    <string name="description">Description</string>
+    <string name="tags">Tags</string>
+    <string name="textview">TextView</string>
 </resources>
