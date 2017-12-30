@@ -111,7 +111,7 @@ public class BooksActivity extends AppCompatActivity {
     private void handleGetAll(BooksList books){
         Log.d(TAG, "GetAll books");
 
-        ArrayAdapter<BookDTO> adapter = new ArrayAdapter<BookDTO>(this, R.layout.activity_books_list_view, books.getBooks());
+        ArrayAdapter<BookDTO> adapter = new ArrayAdapter<BookDTO>(this, R.layout.list_view, books.getBooks());
         this.listView.setAdapter(adapter);
     }
 }

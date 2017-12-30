@@ -58,8 +58,7 @@
             android:id="@+id/tagsTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/d"
-            android:layout_alignBottom="@+id/d"
+            android:layout_alignBottom="@+id/tagsView"
             android:layout_alignStart="@+id/descriptionTextView"
             android:text="@string/tags" />
 
@@ -95,17 +94,6 @@
             android:ems="10"
             android:focusable="false" />
 
-        <TextView
-            android:id="@+id/d"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignStart="@+id/descriptionTextField"
-            android:layout_marginBottom="109dp"
-            android:editable="false"
-            android:focusable="false"
-            android:text="@string/textview" />
-
         <EditText
             android:id="@+id/descriptionTextField"
             android:layout_width="210dp"
@@ -127,6 +115,15 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_toEndOf="@+id/titleTextView" />
+
+        <ListView
+            android:id="@+id/tagsView"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_above="@+id/ratingBar"
+            android:layout_alignStart="@+id/descriptionTextField"
+            android:layout_marginBottom="30dp"
+            android:scrollbars="vertical" />
 
 
     </RelativeLayout>

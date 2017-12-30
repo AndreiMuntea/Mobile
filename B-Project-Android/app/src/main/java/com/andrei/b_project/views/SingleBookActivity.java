@@ -4,8 +4,10 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ProgressBar;
+import android.widget.ExpandableListView;
+import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.Toast;
 
@@ -13,6 +15,7 @@ import com.andrei.b_project.R;
 import com.andrei.b_project.net.book.BookClient;
 import com.andrei.b_project.net.book.BookDTO;
 import com.andrei.b_project.net.book.BookDetails;
+import com.andrei.b_project.net.book.TagDTO;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -29,6 +32,7 @@ public class SingleBookActivity extends AppCompatActivity {
     private BookClient bookClient;
 
     private BookDTO book;
+    private ListView tagsView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,8 +41,9 @@ public class SingleBookActivity extends AppCompatActivity {
 
         Bundle bundle = getIntent().getExtras();
         String bookId = bundle.getString("bookId");
-
+        this.tagsView = findViewById(R.id.tagsView);
         this.bookClient = new BookClient(this);
+
         getBook(bookId);
 
         Log.d(TAG, "The OnCreate() event");
@@ -117,6 +122,9 @@ public class SingleBookActivity extends AppCompatActivity {
         ((EditText) findViewById(R.id.publicationDateTextField)).setText(FORMAT.format(this.book.getDate()));
         ((EditText) findViewById(R.id.descriptionTextField)).setText(this.book.getDescription());
         ((RatingBar) findViewById(R.id.ratingBar)).setRating(book.getRating());
+
+        ArrayAdapter<TagDTO> adapter = new ArrayAdapter<>(this, R.layout.list_view, book.getTags());
+        this.tagsView.setAdapter(adapter);
     }
 
 
