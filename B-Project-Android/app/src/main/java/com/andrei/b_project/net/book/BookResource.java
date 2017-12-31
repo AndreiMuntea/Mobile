@@ -1,7 +1,9 @@
 package com.andrei.b_project.net.book;
 
+import com.andrei.b_project.net.book.Responses.BookDTO;
 import com.andrei.b_project.net.book.Responses.BookDetails;
 import com.andrei.b_project.net.book.Responses.BooksList;
+import com.andrei.b_project.net.book.Responses.EmptyResponse;
 import com.andrei.b_project.net.book.Responses.Rating;
 
 import io.reactivex.Observable;
@@ -29,4 +31,10 @@ public interface BookResource {
 
     @GET("/books/get/author/{authorName}")
     Observable<BooksList> getAllBooksByAuthor(@Path("authorName")String authorName);
+
+    @PUT("/books/add")
+    Observable<BookDTO> addBook(@Body BookDTO book);
+
+    @PUT("/books/tagBook/{bookId}/{tag}")
+    Observable<EmptyResponse> tagBook(@Path("bookId") String bookId, @Path("tag") String tag);
 }

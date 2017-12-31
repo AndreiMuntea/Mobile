@@ -82,4 +82,10 @@ public class MainMenuActivity extends AppCompatActivity {
 
         startActivity(intent);
     }
+
+    public void handleAddBook(View view){
+        Intent intent = new Intent(this, AddBookActivity.class);
+
+        startActivity(intent);
+    }
 }

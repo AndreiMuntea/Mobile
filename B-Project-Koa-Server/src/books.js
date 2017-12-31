@@ -89,7 +89,9 @@ export class BooksRouter extends Router{
         await this.booksDatabase.insert([{title: requestBody.title, author: requestBody.author, date:date, description: requestBody.description}]);
         
         var retBook = await this.findBook(requestBody.title, requestBody.author, date);
-        setStatus(context, OK, {book: retBook});
+        console.log(retBook);
+
+        setStatus(context, OK, {title: retBook["title"], author: retBook["author"], date: retBook["date"], description: retBook["description"], _id:retBook["_id"]});
     }
 
     async findBook(title, author, date){
@@ -150,8 +152,8 @@ export class BooksRouter extends Router{
 
         var foundTag = await this.findTag(tag);
         if (foundTag == null){
-            setStatus(context, BAD_REQUEST, {error: "Tag not found"});
-            return;
+            console.log("Insert new tag: ", tag);
+            await this.tagsDatabase.insert([{tag:tag}]);
         }
 
         var bookTag = await this.bookTagsDatabase.findOne({bookId:bookId, tag:tag});

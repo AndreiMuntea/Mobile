@@ -158,8 +158,6 @@ public class SingleBookActivity extends AppCompatActivity {
             }
         });
 
-        List<Tag> tags = realm.where(Tag.class).findAll();
-
         ArrayAdapter<TagDTO> adapter = new ArrayAdapter<>(this, R.layout.list_view, book.getTags());
         this.tagsView.setAdapter(adapter);
     }

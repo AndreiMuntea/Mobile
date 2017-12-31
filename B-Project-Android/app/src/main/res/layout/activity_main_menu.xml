@@ -25,6 +25,7 @@
             android:layout_marginTop="40dp"
             android:clickable="true"
             app:srcCompat="@drawable/addbook"
+            android:onClick="handleAddBook"
             tools:layout_editor_absoluteX="267dp"
             tools:layout_editor_absoluteY="51dp"
             android:focusable="true" />

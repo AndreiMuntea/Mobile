@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.andrei.b_project.views.AddBookActivity">
+
+    <RelativeLayout
+        android:layout_width="368dp"
+        android:layout_height="495dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/titleTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/bookIdTextView"
+            android:layout_marginStart="18dp"
+            android:layout_marginTop="22dp"
+            android:text="@string/title"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/authorTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/titleTextView"
+            android:layout_below="@+id/titleTextView"
+            android:layout_marginTop="39dp"
+            android:text="@string/author"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/publicationDateTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/authorTextView"
+            android:layout_below="@+id/authorTextView"
+            android:layout_marginTop="34dp"
+            android:text="@string/publication_date"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/descriptionTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/descriptionTextField"
+            android:layout_alignStart="@+id/publicationDateTextView"
+            android:text="@string/description"
+            android:textSize="16sp" />
+
+
+        <EditText
+            android:id="@+id/titleTextField"
+            android:layout_width="210dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignTop="@+id/titleTextView"
+            android:ems="10" />
+
+        <EditText
+            android:id="@+id/authorTextField"
+            android:layout_width="210dp"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/publicationDateTextView"
+            android:layout_alignParentEnd="true"
+            android:ems="10"
+            android:inputType="textPersonName" />
+
+        <EditText
+            android:id="@+id/publicationDateTextField"
+            android:layout_width="210dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@+id/authorTextField"
+            android:layout_marginTop="21dp"
+            android:ems="10" />
+
+        <EditText
+            android:id="@+id/descriptionTextField"
+            android:layout_width="210dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@+id/publicationDateTextField"
+            android:layout_marginTop="19dp"
+            android:ems="10"
+            android:inputType="textMultiLine"
+            android:maxLines="6"
+            android:scrollbars="vertical"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/tagsTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/descriptionTextView"
+            android:layout_below="@+id/descriptionTextView"
+            android:layout_marginTop="34dp"
+            android:text="@string/tags" />
+
+        <Button
+            android:id="@+id/addNewTagToListButton"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/tagsTextView"
+            android:layout_alignParentEnd="true"
+            android:text="@string/plus"
+            android:onClick="addNewTagToListView"
+            android:textSize="18sp" />
+
+        <ListView
+            android:id="@+id/tagsListView"
+            android:layout_width="100dp"
+            android:layout_height="15dp"
+            android:layout_above="@+id/addNewBookButton"
+            android:layout_alignEnd="@+id/addTagTextField"
+            android:layout_alignStart="@+id/addTagTextField"
+            android:layout_below="@+id/addTagTextField"
+            android:layout_marginTop="12dp" />
+
+        <Button
+            android:id="@+id/addNewBookButton"
+            android:layout_width="175dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
+            android:onClick="createBook"
+            android:text="@string/add_book" />
+
+        <Button
+            android:id="@+id/addNewTagButton"
+            android:layout_width="175dp"
+            android:onClick="tagBook"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:text="@string/tag_book" />
+
+        <EditText
+            android:id="@+id/addTagTextField"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/tagsTextView"
+            android:layout_alignStart="@+id/descriptionTextField"
+            android:layout_toStartOf="@+id/addNewTagToListButton"
+            android:ems="10"
+            android:inputType="textPersonName" />
+
+        <TextView
+            android:id="@+id/bookIdTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignStart="@+id/titleTextView"
+            android:text="Book ID"
+            android:textSize="18sp" />
+
+        <EditText
+            android:id="@+id/bookIdTextField"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/titleTextField"
+            android:layout_alignStart="@+id/titleTextField"
+            android:ems="10"
+            android:inputType="textPersonName" />
+
+
+    </RelativeLayout>
+
+</android.support.constraint.ConstraintLayout>

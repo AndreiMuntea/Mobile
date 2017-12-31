@@ -22,6 +22,7 @@
         <activity android:name=".views.BooksActivity" />
         <activity android:name=".views.MainMenuActivity" />
         <activity android:name=".views.SingleBookActivity" />
+        <activity android:name=".views.AddBookActivity"></activity>
     </application>
 
 </manifest>

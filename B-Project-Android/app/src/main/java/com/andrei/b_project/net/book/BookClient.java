@@ -3,14 +3,18 @@ package com.andrei.b_project.net.book;
 import android.content.Context;
 
 import com.andrei.b_project.R;
+import com.andrei.b_project.net.book.Responses.BookDTO;
 import com.andrei.b_project.net.book.Responses.BookDetails;
 import com.andrei.b_project.net.book.Responses.BooksList;
+import com.andrei.b_project.net.book.Responses.EmptyResponse;
 import com.andrei.b_project.net.book.Responses.Rating;
 
 import io.reactivex.Observable;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.Body;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
 /**
@@ -51,5 +55,14 @@ public class BookClient {
 
     public Observable<BooksList> getAllBooksByAuthor(String authorName){
         return bookResource.getAllBooksByAuthor(authorName);
+    }
+
+    public Observable<BookDTO> addBook(BookDTO book){
+        return bookResource.addBook(book);
+    }
+
+
+    public Observable<EmptyResponse> tagBook(String bookId, String tag){
+        return bookResource.tagBook(bookId, tag);
     }
 }
