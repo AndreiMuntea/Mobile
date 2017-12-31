@@ -48,4 +48,8 @@ public class BookClient {
     public Observable<BooksList> getAllBooksForUser(String username){
         return bookResource.getAllBooksForUser(username);
     }
+
+    public Observable<BooksList> getAllBooksByAuthor(String authorName){
+        return bookResource.getAllBooksByAuthor(authorName);
+    }
 }

@@ -26,4 +26,7 @@ public interface BookResource {
 
     @PUT("/books/rate/{username}/{bookId}")
     Observable<Rating> rateBook(@Path("username") String username, @Path("bookId") String bookId, @Body Rating rating);
+
+    @GET("/books/get/author/{authorName}")
+    Observable<BooksList> getAllBooksByAuthor(@Path("authorName")String authorName);
 }

@@ -12,6 +12,8 @@ import android.widget.RatingBar;
 import android.widget.Toast;
 
 import com.andrei.b_project.R;
+import com.andrei.b_project.domain.Book;
+import com.andrei.b_project.domain.Tag;
 import com.andrei.b_project.domain.User;
 import com.andrei.b_project.net.book.BookClient;
 import com.andrei.b_project.net.book.Responses.BookDTO;
@@ -20,6 +22,7 @@ import com.andrei.b_project.net.book.Responses.Rating;
 import com.andrei.b_project.net.book.Responses.TagDTO;
 
 import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.Locale;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -54,7 +57,7 @@ public class SingleBookActivity extends AppCompatActivity {
         this.ratingBar = findViewById(R.id.ratingBar);
         this.realm = Realm.getDefaultInstance();
 
-        realm.executeTransaction(realm -> this.user = realm.where(User.class).findAll().get(0));
+        realm.executeTransaction(realm -> this.user = realm.where(User.class).findFirst());
 
         getBook(bookId);
 
@@ -147,6 +150,15 @@ public class SingleBookActivity extends AppCompatActivity {
         ((EditText) findViewById(R.id.publicationDateTextField)).setText(FORMAT.format(this.book.getDate()));
         ((EditText) findViewById(R.id.descriptionTextField)).setText(this.book.getDescription());
         this.ratingBar.setRating(book.getRating());
+
+        realm.executeTransaction(realm -> {
+            Book b = realm.where(Book.class).equalTo("id", this.book.getId()).findFirst();
+            for (TagDTO t : book.getTags()){
+                b.getTags().add(new Tag(t.getTag()));
+            }
+        });
+
+        List<Tag> tags = realm.where(Tag.class).findAll();
 
         ArrayAdapter<TagDTO> adapter = new ArrayAdapter<>(this, R.layout.list_view, book.getTags());
         this.tagsView.setAdapter(adapter);
