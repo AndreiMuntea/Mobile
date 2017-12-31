@@ -48,6 +48,7 @@
             android:layout_alignTop="@+id/addBookImageView"
             android:layout_centerHorizontal="true"
             android:clickable="true"
+            android:onClick="handleMyBooks"
             app:srcCompat="@drawable/mybooks"
             android:focusable="true" />
     </RelativeLayout>

@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.andrei.b_project.R;
+import com.andrei.b_project.domain.User;
 import com.andrei.b_project.net.book.BookClient;
 import com.andrei.b_project.net.book.Responses.BookDTO;
 import com.andrei.b_project.net.book.Responses.BooksList;
@@ -15,6 +16,7 @@ import com.andrei.b_project.net.book.Responses.BooksList;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
+import io.realm.Realm;
 
 public class BooksActivity extends AppCompatActivity {
 
@@ -26,14 +28,27 @@ public class BooksActivity extends AppCompatActivity {
 
     private ListView listView;
 
+    private Realm realm;
+
+    private User user;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_books);
 
+        this.realm = Realm.getDefaultInstance();
         this.listView = findViewById(R.id.booksListView);
         this.bookClient = new BookClient(this);
-        getAll();
+        realm.executeTransaction(realm -> this.user = realm.where(User.class).findFirst());
+
+        Boolean myBooksOnly = getIntent().getExtras().getBoolean("myBooks");
+
+        if(myBooksOnly){
+            getMyBooks();
+        }else{
+            getAll();
+        }
 
         listView.setOnItemClickListener((adapterView, view, i, l) -> {
             BookDTO bookDTO = (BookDTO) adapterView.getItemAtPosition(i);
@@ -100,6 +115,16 @@ public class BooksActivity extends AppCompatActivity {
 
     private void getAll(){
         disposables.add(bookClient.getAllBooks()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        this::handleGetAll
+                )
+        );
+    }
+
+    private void getMyBooks(){
+        disposables.add(bookClient.getAllBooksForUser(user.getUsername())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(

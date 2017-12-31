@@ -18,6 +18,9 @@ public interface BookResource {
     @GET("/books/get")
     Observable<BooksList> getAllBooks();
 
+    @GET("/books/get/username/{username}")
+    Observable<BooksList> getAllBooksForUser(@Path("username")String username);
+
     @GET("/books/get/{bookId}")
     Observable<BookDetails> getBook(@Path("bookId") String bookId);
 

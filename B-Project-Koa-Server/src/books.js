@@ -28,6 +28,10 @@ export class BooksRouter extends Router{
             await this.handleGetAllByAuthor(context);
         });
 
+        this.get('/books/get/username/:username', async(context, next) =>{
+            await this.handleGetBooksForUser(context);
+        });
+
         this.put('/tags/add', async (context, next)=>{
             await this.handleAddTag(context);
         });
@@ -267,5 +271,19 @@ export class BooksRouter extends Router{
         console.log("RATING for ", bookId, " : ", r/ratings.length);
 
         return r / ratings.length;
+    }
+
+    async handleGetBooksForUser(context){
+        var username = context.params.username;
+
+        var bookIds = await this.userBooksDatabase.cfind({username:username}).exec();
+        var books = [];
+
+        for(let i = 0; i < bookIds.length; ++i){
+            let b = await this.booksDatabase.findOne({_id:bookIds[i]["bookId"]});
+            books.push(b);
+        }
+
+        setStatus(context, OK, {books:books});
     }
 }

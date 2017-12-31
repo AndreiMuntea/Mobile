@@ -70,6 +70,16 @@ public class MainMenuActivity extends AppCompatActivity {
     }
 
     public void handleAllBooks(View view) {
-        startActivity(new Intent(this, BooksActivity.class));
+        Intent intent = new Intent(this, BooksActivity.class);
+        intent.putExtra("myBooks", false);
+
+        startActivity(intent);
+    }
+
+    public void handleMyBooks(View view) {
+        Intent intent = new Intent(this, BooksActivity.class);
+        intent.putExtra("myBooks", true);
+
+        startActivity(intent);
     }
 }
