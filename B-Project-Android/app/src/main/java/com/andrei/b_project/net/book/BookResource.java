@@ -6,6 +6,8 @@ import com.andrei.b_project.net.book.Responses.BooksList;
 import com.andrei.b_project.net.book.Responses.EmptyResponse;
 import com.andrei.b_project.net.book.Responses.Rating;
 
+import java.util.List;
+
 import io.reactivex.Observable;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -18,10 +20,10 @@ import retrofit2.http.Path;
 
 public interface BookResource {
     @GET("/books/get")
-    Observable<BooksList> getAllBooks();
+    Observable<List<BookDetails>> getAllBooks();
 
     @GET("/books/get/username/{username}")
-    Observable<BooksList> getAllBooksForUser(@Path("username")String username);
+    Observable<List<BookDetails>> getAllBooksForUser(@Path("username")String username);
 
     @GET("/books/get/{bookId}")
     Observable<BookDetails> getBook(@Path("bookId") String bookId);

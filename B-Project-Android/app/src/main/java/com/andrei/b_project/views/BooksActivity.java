@@ -12,10 +12,13 @@ import android.widget.ListView;
 
 import com.andrei.b_project.R;
 import com.andrei.b_project.domain.Book;
+import com.andrei.b_project.domain.Tag;
 import com.andrei.b_project.domain.User;
 import com.andrei.b_project.net.book.BookClient;
 import com.andrei.b_project.net.book.Responses.BookDTO;
+import com.andrei.b_project.net.book.Responses.BookDetails;
 import com.andrei.b_project.net.book.Responses.BooksList;
+import com.andrei.b_project.net.book.Responses.TagDTO;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -171,32 +174,39 @@ public class BooksActivity extends AppCompatActivity {
         );
     }
 
-    private void handleGetAll(BooksList books){
+    private void handleGetAll(List<BookDetails> books){
         Log.d(TAG, "GetAll books");
 
         realm.executeTransaction(realm -> {
             realm.where(Book.class).findAll().deleteAllFromRealm();
-            for(BookDTO bookDTO : books.getBooks()){
-                Book b = new Book(
-                        bookDTO.getId(),
-                        bookDTO.getDescription(),
-                        bookDTO.getAuthor(),
-                        bookDTO.getDate(),
-                        bookDTO.getTitle()
-                );
-                realm.copyToRealm(b);
+
+            for(BookDetails bd : books){
+                    BookDTO bookDTO = bd.getBook();
+                    Book b = new Book(
+                            bookDTO.getId(),
+                            bookDTO.getDescription(),
+                            bookDTO.getAuthor(),
+                            bookDTO.getDate(),
+                            bookDTO.getTitle()
+                    );
+                    for(TagDTO tagDTO : bd.getTags()){
+                        b.getTags().add(new Tag(tagDTO.getTag()));
+                    }
+                    realm.copyToRealmOrUpdate(b);
+                }
             }
-        });
+        );
 
         getMyBooks();
     }
 
-    private void handleGetMyBooks(BooksList books){
+    private void handleGetMyBooks(List<BookDetails> books){
         Log.d(TAG, "handleGetMyBooks");
 
         realm.executeTransaction(realm -> user.setBooks(new RealmList<>()));
 
-        for(BookDTO b :books.getBooks()){
+        for(BookDetails bd :books){
+            BookDTO b = bd.getBook();
             realm.executeTransaction(realm->{
                 Book book = realm.where(Book.class).equalTo("id", b.getId()).findFirst();
                 Log.d(TAG, book.getTitle());

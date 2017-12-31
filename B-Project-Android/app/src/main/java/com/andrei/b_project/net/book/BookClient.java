@@ -9,6 +9,8 @@ import com.andrei.b_project.net.book.Responses.BooksList;
 import com.andrei.b_project.net.book.Responses.EmptyResponse;
 import com.andrei.b_project.net.book.Responses.Rating;
 
+import java.util.List;
+
 import io.reactivex.Observable;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
@@ -37,7 +39,7 @@ public class BookClient {
         this.bookResource = retrofit.create(BookResource.class);
     }
 
-    public Observable<BooksList> getAllBooks(){
+    public Observable<List<BookDetails>> getAllBooks(){
         return bookResource.getAllBooks();
     }
 
@@ -49,7 +51,7 @@ public class BookClient {
         return bookResource.rateBook(username, bookId, rating);
     }
 
-    public Observable<BooksList> getAllBooksForUser(String username){
+    public Observable<List<BookDetails>> getAllBooksForUser(String username){
         return bookResource.getAllBooksForUser(username);
     }
 
