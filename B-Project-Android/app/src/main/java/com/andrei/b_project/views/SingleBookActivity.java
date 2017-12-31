@@ -1,21 +1,23 @@
 package com.andrei.b_project.views;
 
+import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ExpandableListView;
 import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.Toast;
 
 import com.andrei.b_project.R;
+import com.andrei.b_project.domain.User;
 import com.andrei.b_project.net.book.BookClient;
-import com.andrei.b_project.net.book.BookDTO;
-import com.andrei.b_project.net.book.BookDetails;
-import com.andrei.b_project.net.book.TagDTO;
+import com.andrei.b_project.net.book.Responses.BookDTO;
+import com.andrei.b_project.net.book.Responses.BookDetails;
+import com.andrei.b_project.net.book.Responses.Rating;
+import com.andrei.b_project.net.book.Responses.TagDTO;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -23,6 +25,8 @@ import java.util.Locale;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
+import io.realm.Realm;
+import retrofit2.HttpException;
 
 public class SingleBookActivity extends AppCompatActivity {
     private static final String TAG = SingleBookActivity.class.getSimpleName();
@@ -30,9 +34,13 @@ public class SingleBookActivity extends AppCompatActivity {
 
     private CompositeDisposable disposables = new CompositeDisposable();
     private BookClient bookClient;
+    private Realm realm;
 
     private BookDTO book;
     private ListView tagsView;
+    private RatingBar ratingBar;
+
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +51,25 @@ public class SingleBookActivity extends AppCompatActivity {
         String bookId = bundle.getString("bookId");
         this.tagsView = findViewById(R.id.tagsView);
         this.bookClient = new BookClient(this);
+        this.ratingBar = findViewById(R.id.ratingBar);
+        this.realm = Realm.getDefaultInstance();
+
+        realm.executeTransaction(realm -> this.user = realm.where(User.class).findAll().get(0));
 
         getBook(bookId);
+
+        this.ratingBar.setOnRatingBarChangeListener((ratingBar, v, b) -> {
+            if(!b) return;  // not user input
+
+            disposables.add(bookClient.rateBook(this.user.getUsername(), bookId, new Rating(v))
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(
+                            this::handleRatingChange,
+                            this::handleError
+                    )
+            );
+        });
 
         Log.d(TAG, "The OnCreate() event");
     }
@@ -121,17 +146,35 @@ public class SingleBookActivity extends AppCompatActivity {
         ((EditText) findViewById(R.id.authorTextField)).setText(this.book.getAuthor());
         ((EditText) findViewById(R.id.publicationDateTextField)).setText(FORMAT.format(this.book.getDate()));
         ((EditText) findViewById(R.id.descriptionTextField)).setText(this.book.getDescription());
-        ((RatingBar) findViewById(R.id.ratingBar)).setRating(book.getRating());
+        this.ratingBar.setRating(book.getRating());
 
         ArrayAdapter<TagDTO> adapter = new ArrayAdapter<>(this, R.layout.list_view, book.getTags());
         this.tagsView.setAdapter(adapter);
     }
 
 
-    private void handleError(Throwable error) {
-        Log.d(TAG, error.getMessage());
+    private void handleRatingChange(Rating rating){
+        ObjectAnimator anim = ObjectAnimator.ofFloat(ratingBar, "rating", 0, rating.getRating());
+        anim.setDuration(1000);
+        anim.start();
 
-        Toast toast = Toast.makeText(this, "Bad request!", Toast.LENGTH_SHORT);
+        this.ratingBar.setRating(rating.getRating());
+    }
+
+    private void handleError(Throwable error) {
+        String errorMessage = error.getMessage();
+
+        if (error instanceof HttpException) {
+            try {
+                errorMessage = ((HttpException) error).response().errorBody().string();
+            } catch (Exception e) {
+                Log.d(TAG, "FATAL EXCEPTION: " + e.getMessage());
+            }
+        }
+
+        Log.d(TAG, errorMessage);
+
+        Toast toast = Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT);
         toast.show();
 
         startActivity(new Intent(this, BooksActivity.class));

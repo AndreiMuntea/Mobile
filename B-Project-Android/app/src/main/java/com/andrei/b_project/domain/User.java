@@ -1,12 +1,18 @@
 package com.andrei.b_project.domain;
 
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+import io.realm.annotations.Required;
+
 /**
  * Created by munte on 12/28/2017.
  */
 
-public class User {
+public class User extends RealmObject {
+    @PrimaryKey
     private String username;
 
+    @Required
     private String password;
 
     public User(String username, String password) {

@@ -9,8 +9,8 @@ import android.widget.ListView;
 
 import com.andrei.b_project.R;
 import com.andrei.b_project.net.book.BookClient;
-import com.andrei.b_project.net.book.BookDTO;
-import com.andrei.b_project.net.book.BooksList;
+import com.andrei.b_project.net.book.Responses.BookDTO;
+import com.andrei.b_project.net.book.Responses.BooksList;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;

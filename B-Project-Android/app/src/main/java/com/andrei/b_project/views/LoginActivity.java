@@ -18,6 +18,7 @@ import com.andrei.b_project.net.user.UserDTO;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
+import io.realm.Realm;
 import retrofit2.HttpException;
 
 public class LoginActivity extends AppCompatActivity {
@@ -27,6 +28,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private CompositeDisposable disposables = new CompositeDisposable();
 
+    private Realm realm;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +37,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         this.userClient = new UserClient(this);
+        this.realm = Realm.getDefaultInstance();
 
         Log.d(TAG, "The onCreate() event");
     }
@@ -93,6 +97,8 @@ public class LoginActivity extends AppCompatActivity {
     public void login(View view) {
         UserDTO user = new UserDTO(getUserDetails());
 
+        this.realm.executeTransactionAsync(realm -> realm.where(User.class).findAll().deleteAllFromRealm());
+
         disposables.add(userClient.login(user)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -124,6 +130,10 @@ public class LoginActivity extends AppCompatActivity {
 
     private void handleLoginSuccessful(TokenDTO tokenDTO) {
         Log.d(TAG, "Successful login");
+
+        User user = getUserDetails();
+        this.realm.executeTransactionAsync(realm -> realm.copyToRealmOrUpdate(user));
+
         startActivity(new Intent(this, MainMenuActivity.class));
     }
 

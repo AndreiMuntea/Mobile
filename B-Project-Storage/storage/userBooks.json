@@ -1,4 +1,7 @@
-{"username":"John2","bookId":"3cTdVBR9IWbUqZaV","rating":5,"_id":"GENREQygkhXBF46G"}
-{"username":"John","bookId":"3cTdVBR9IWbUqZaV","rating":3,"_id":"GENREQygkhXBF46G"}
-{"$$deleted":true,"_id":"3wgEXcyeY4bhjluZ"}
-{"username":"John","bookId":"3cTdVBR9IWbUqZaV","rating":2,"_id":"f8qdgHKJgQC2JfkM"}
+{"username":"John","bookId":"3cTdVBR9IWbUqZaV","rating":3,"_id":"rUlwzCP1cqEv5dW3"}
+{"$$deleted":true,"_id":"rUlwzCP1cqEv5dW3"}
+{"username":"John","bookId":"3cTdVBR9IWbUqZaV","rating":2,"_id":"f7fGsAjsZ3FSSYuM"}
+{"$$deleted":true,"_id":"f7fGsAjsZ3FSSYuM"}
+{"username":"John","bookId":"3cTdVBR9IWbUqZaV","rating":4,"_id":"NAT3I8z0Y06OKVd0"}
+{"$$deleted":true,"_id":"NAT3I8z0Y06OKVd0"}
+{"username":"John","bookId":"3cTdVBR9IWbUqZaV","rating":1,"_id":"7e2LIprvZG1AExCt"}

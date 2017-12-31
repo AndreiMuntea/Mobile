@@ -3,8 +3,9 @@ package com.andrei.b_project.net.book;
 import android.content.Context;
 
 import com.andrei.b_project.R;
-
-import java.util.List;
+import com.andrei.b_project.net.book.Responses.BookDetails;
+import com.andrei.b_project.net.book.Responses.BooksList;
+import com.andrei.b_project.net.book.Responses.Rating;
 
 import io.reactivex.Observable;
 import retrofit2.Retrofit;
@@ -37,5 +38,9 @@ public class BookClient {
 
     public Observable<BookDetails> getBook(String bookId){
         return bookResource.getBook(bookId);
+    }
+
+    public Observable<Rating> rateBook(String username, String bookId, Rating rating){
+        return bookResource.rateBook(username, bookId, rating);
     }
 }

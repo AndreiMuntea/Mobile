@@ -1,4 +1,4 @@
-package com.andrei.b_project.net.book;
+package com.andrei.b_project.net.book.Responses;
 
 import com.google.gson.annotations.SerializedName;
 

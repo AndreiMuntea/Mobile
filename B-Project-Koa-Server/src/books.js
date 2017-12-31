@@ -205,8 +205,8 @@ export class BooksRouter extends Router{
         }
 
         var value = getInt(requestBody.rating);
-        if (value == null || value < 1 || value > 5){
-            setStatus(context, BAD_REQUEST, {error: "Rating should be an integer between 1 and 5!"});
+        if (value == null || value < 0 || value > 5){
+            setStatus(context, BAD_REQUEST, {error: "Rating should be a number between 0 and 5!"});
             return;
         }
 
@@ -232,7 +232,7 @@ export class BooksRouter extends Router{
         }
         await this.userBooksDatabase.insert({username:username, bookId:bookId, rating:value});
 
-        var retRating = await this.userBooksDatabase.findOne({username:username, bookId:bookId});
+        var retRating = await this.calculateRating(bookId);
         setStatus(context, OK, {rating: retRating});
     }
 
@@ -261,7 +261,10 @@ export class BooksRouter extends Router{
         var r = 0.0;
         for(let i = 0; i < ratings.length; ++i){
             r = r + ratings[i]["rating"];
+            console.log(r);
         }
+
+        console.log("RATING for ", bookId, " : ", r/ratings.length);
 
         return r / ratings.length;
     }
