@@ -1,6 +1,7 @@
 package com.andrei.b_project.views;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -17,10 +18,15 @@ import com.andrei.b_project.domain.User;
 import com.andrei.b_project.net.book.BookClient;
 import com.andrei.b_project.net.book.Responses.BookDTO;
 import com.andrei.b_project.net.book.Responses.BookDetails;
-import com.andrei.b_project.net.book.Responses.BooksList;
 import com.andrei.b_project.net.book.Responses.TagDTO;
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -42,6 +48,7 @@ public class BooksActivity extends AppCompatActivity {
     private List<Book> displayedBooks;
     private AutoCompleteTextView autoCompleteTextView;
 
+    private PieChart pieChart;
     private Realm realm;
 
     private User user;
@@ -56,6 +63,8 @@ public class BooksActivity extends AppCompatActivity {
 
         this.listView = findViewById(R.id.booksListView);
         this.autoCompleteTextView = findViewById(R.id.authorNameTextField);
+        this.pieChart = findViewById(R.id.piechart);
+        this.pieChart.setUsePercentValues(true);
 
         this.displayedBooks = new ArrayList<>();
 
@@ -229,6 +238,8 @@ public class BooksActivity extends AppCompatActivity {
         this.listView.setAdapter(adapter1);
 
         this.displayedBooks = books;
+
+        getPieData(adapter1);
     }
 
     private void handleAuthorNameChange(CharSequence sequence){
@@ -242,5 +253,51 @@ public class BooksActivity extends AppCompatActivity {
 
         ArrayAdapter<Book> adapter1 = new ArrayAdapter<Book>(this, R.layout.list_view, newBooks);
         listView.setAdapter(adapter1);
+    }
+
+    private void getPieData(ArrayAdapter<Book> adapter){
+        HashMap<String, Integer> values = new HashMap<>();
+
+        for(int i = 0; i < adapter.getCount(); ++i){
+            Book b = adapter.getItem(i);
+            for (Tag t : b.getTags()){
+                if (!values.containsKey(t.getTag())){
+                    values.put(t.getTag(), 0);
+                }
+                Integer lastValue = values.get(t.getTag());
+                values.put(t.getTag(), lastValue + 1);
+            }
+        }
+
+        ArrayList<Entry> yValues = new ArrayList<>();
+        ArrayList<String> xValues = new ArrayList<>();
+        Integer idx = 0;
+
+        for(String key : values.keySet()){
+            xValues.add(key);
+            yValues.add(new Entry(Float.valueOf(values.get(key)), idx));
+            idx += 1;
+
+            if(idx > 4) break;
+        }
+
+        PieDataSet dataSet = new PieDataSet(yValues, "");
+
+        dataSet.setColors(ColorTemplate.VORDIPLOM_COLORS);
+        dataSet.setColors(ColorTemplate.JOYFUL_COLORS);
+        dataSet.setColors(ColorTemplate.COLORFUL_COLORS);
+        dataSet.setColors(ColorTemplate.LIBERTY_COLORS);
+        dataSet.setColors(ColorTemplate.PASTEL_COLORS);
+
+        PieData data = new PieData(xValues, dataSet);
+        data.setValueTextSize(16f);
+        data.setValueTextColor(Color.DKGRAY);
+
+        this.pieChart.setData(data);
+        this.pieChart.setDrawHoleEnabled(false);
+        this.pieChart.setCenterTextSize(24);
+        this.pieChart.setDescription("Hottest books");
+        this.pieChart.setDescriptionTextSize(16);
+
     }
 }

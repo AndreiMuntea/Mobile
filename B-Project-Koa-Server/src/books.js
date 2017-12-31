@@ -104,6 +104,7 @@ export class BooksRouter extends Router{
         var results = [];
 
         for(let i = 0; i < books.length; ++i){
+            console.log(books[i]);
             let tags = await this.bookTagsDatabase.cfind({bookId:books[i]["_id"]}).projection({tag:1, _id:0}).exec();
             let rating = await this.calculateRating({bookId:books[i]["_id"]});
             results.push({book:books[i], tags:tags, rating:rating});
@@ -291,7 +292,7 @@ export class BooksRouter extends Router{
         
         var results = [];
         
-        for(let i = 0; i < books.length; ++i){
+        for(let i = 0; i < bookIds.length; ++i){
             let book = await this.booksDatabase.findOne({_id:bookIds[i]["bookId"]});
             let tags = await this.bookTagsDatabase.cfind({bookId:bookIds[i]["bookId"]}).projection({tag:1, _id:0}).exec();
             let rating = await this.calculateRating({bookId:bookIds[i]["bookId"]});
