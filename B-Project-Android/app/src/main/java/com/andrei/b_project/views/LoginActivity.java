@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.andrei.b_project.R;
@@ -30,6 +31,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private Realm realm;
 
+    private ProgressBar progressBar;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +41,8 @@ public class LoginActivity extends AppCompatActivity {
 
         this.userClient = new UserClient(this);
         this.realm = Realm.getDefaultInstance();
+        this.progressBar = findViewById(R.id.progressBar);
+        this.progressBar.setVisibility(View.GONE);
 
         Log.d(TAG, "The onCreate() event");
     }
@@ -96,6 +101,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void login(View view) {
         UserDTO user = new UserDTO(getUserDetails());
+        this.progressBar.setVisibility(View.VISIBLE);
 
         disposables.add(userClient.login(user)
                 .subscribeOn(Schedulers.io())
@@ -109,6 +115,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void signUp(View view) {
         UserDTO user = new UserDTO(getUserDetails());
+        this.progressBar.setVisibility(View.VISIBLE);
 
         disposables.add(userClient.signUp(user)
                 .subscribeOn(Schedulers.io())
@@ -128,6 +135,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void handleLoginSuccessful(TokenDTO tokenDTO) {
         Log.d(TAG, "Successful login");
+        this.progressBar.setVisibility(View.GONE);
 
         User user = getUserDetails();
 
@@ -138,6 +146,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void handleSignUpSuccessful(TokenDTO tokenDTO) {
+        this.progressBar.setVisibility(View.GONE);
         Log.d(TAG, "Successful signUp");
 
         Toast toast = Toast.makeText(this, "SUCCESSFUL SIGNUP " + tokenDTO.getToken(), Toast.LENGTH_SHORT);
@@ -145,6 +154,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void handleLoginError(Throwable error){
+        this.progressBar.setVisibility(View.GONE);
         Log.d(TAG, "Successful login with local data");
 
         User user = getUserDetails();
@@ -162,6 +172,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void handleSignupError(Throwable error) {
+        this.progressBar.setVisibility(View.GONE);
         String errorMessage = "Failed at authentication";
 
         if (error instanceof HttpException) {

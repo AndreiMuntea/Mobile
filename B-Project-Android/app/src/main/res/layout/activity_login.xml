@@ -74,6 +74,15 @@
             android:text="@string/username"
             android:textSize="24sp" />
 
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/passwordTextField"
+            android:layout_below="@+id/signupButton"
+            android:layout_marginTop="80dp" />
+
     </RelativeLayout>
 
 </android.support.constraint.ConstraintLayout>
