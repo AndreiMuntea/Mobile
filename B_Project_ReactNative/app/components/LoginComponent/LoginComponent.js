@@ -1,51 +1,46 @@
 import React, {Component} from 'react';
 import {AppRegistry, Text, View, TextInput, StyleSheet, TouchableOpacity} from 'react-native';
 
+import TextFieldComponent from "../InlineComponents/TextFieldComponent"
+import DoubleButtonsComponent from "../InlineComponents/DoubleButtonComponent"
+import PasswordComponent from "../InlineComponents/PasswordComponent"
 
 export default class LoginComponent extends Component{
+  constructor(props) {
+    super(props);
+
+    this.state = {username: '', password: ''};
+  }
 
   loginButtonClicked(){
-
+    console.log("Login with username: ", this.state.username);
+    console.log("Login with password: ", this.state.password);
   }
 
   signupButtonClicked(){
-
+    console.log("Signup with username: ", this.state.username);
+    console.log("Signup with password: ", this.state.password);
   }
 
   render(){
     return(
       <View style={styles.parentView}>
-            <View style={styles.inlineView}>
-                <Text style={styles.textView}>Username: </Text>
-                <TextInput
-                    style={styles.textField}
-                    placeholder=""
-                />
-            </View>
-            <View style={styles.inlineView}>
-                <Text style={styles.textView}>Password: </Text>
-                <TextInput
-                    secureTextEntry={true}
-                    style={styles.textField}
-                    placeholder=""
-                />
-            </View>
-            <View style={styles.inlineView}>
-
-                <TouchableOpacity
-                    style={styles.buttonStyle}
-                    onPress={this.loginButtonClicked}
-                >
-                    <Text style={styles.textView}>Login</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                    style={styles.buttonStyle}
-                    onPress={this.signupButtonClicked}
-                >
-                    <Text style={styles.textView}>Sign Up</Text>
-                </TouchableOpacity>
-            </View>
+            <TextFieldComponent 
+                label='Username' 
+                initialText='' 
+                editableInputType={true} 
+                textUpdated={(text) => this.state.username = text}
+            />
+            <PasswordComponent 
+                label='Password' 
+                textUpdated={(text) => this.state.password = text}
+            />
+            <DoubleButtonsComponent
+                firstButtonLabel='Login'
+                firstButtonClicked={() => this.loginButtonClicked()}
+                secondButtonLabel='Signup'
+                secondButtonClicked={() => this.signupButtonClicked()}
+            />
       </View>
     );
   }
@@ -56,25 +51,6 @@ const styles = StyleSheet.create({
         marginTop: 200,
         justifyContent: 'center',
         alignItems: 'center'
-    },
-    textView: {
-        fontSize: 20,
-        padding: 10,
-    },
-    textField: {
-        fontSize: 14,
-        flex: 0.9
-    },
-    inlineView: {
-        flexDirection: 'row',
-        padding: 10
-    },
-    buttonStyle:{
-        alignItems: 'center',
-        backgroundColor: '#DDDDDD',
-        flex: 0.5,
-        marginRight: 10,
-        marginLeft: 10
     }
 });
 
