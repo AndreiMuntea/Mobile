@@ -22,6 +22,7 @@ import com.andrei.b_project.net.book.Responses.Rating;
 import com.andrei.b_project.net.book.Responses.TagDTO;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -130,17 +131,23 @@ public class SingleBookActivity extends AppCompatActivity {
     }
 
     public void getBook(String bookId){
+        BookDetails bookDetails = new BookDetails();
+        List<TagDTO> tags = new ArrayList<>();
 
-        disposables.add(bookClient.getBook(bookId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        this::handleGetBook,
-                        this::handleError
-                )
-        );
+        Book b = realm.where(Book.class).equalTo("id", bookId).findFirst();
+
+        if(b == null) {
+            handleError(new Throwable("No book found"));
+        }else{
+            bookDetails.setBook(new BookDTO(b.getId(), b.getDescription(), b.getAuthor(), b.getDate(), b.getTitle()));
+            bookDetails.setRating(b.getRating());
+            for(Tag t : b.getTags()){
+                tags.add(new TagDTO(t.getTag()));
+            }
+            bookDetails.setTags(tags);
+            handleGetBook(bookDetails);
+        }
     }
-
     public void handleGetBook(BookDetails book){
         Log.d(TAG, book.getBook().toString());
         this.book = book.getBook();

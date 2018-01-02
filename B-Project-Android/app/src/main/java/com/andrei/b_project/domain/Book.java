@@ -27,10 +27,14 @@ public class Book extends RealmObject{
     @Required
     private String title;
 
+    @Required
+    private Float rating;
+
     private RealmList<Tag> tags;
 
-    public Book(String id, String description, String author, Date date, String title) {
+    public Book(String id, String description, String author, Date date, String title, Float rating) {
         this.id = id;
+        this.rating = rating;
         this.description = description;
         this.author = author;
         this.date = date;
@@ -80,6 +84,14 @@ public class Book extends RealmObject{
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public Float getRating() {
+        return rating;
+    }
+
+    public void setRating(Float rating) {
+        this.rating = rating;
     }
 
     @Override

@@ -97,14 +97,12 @@ public class LoginActivity extends AppCompatActivity {
     public void login(View view) {
         UserDTO user = new UserDTO(getUserDetails());
 
-        this.realm.executeTransactionAsync(realm -> realm.where(User.class).findAll().deleteAllFromRealm());
-
         disposables.add(userClient.login(user)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         this::handleLoginSuccessful,
-                        this::handleError
+                        this::handleLoginError
                 )
         );
     }
@@ -117,7 +115,7 @@ public class LoginActivity extends AppCompatActivity {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         this::handleSignUpSuccessful,
-                        this::handleError
+                        this::handleSignupError
                 )
         );
     }
@@ -132,6 +130,8 @@ public class LoginActivity extends AppCompatActivity {
         Log.d(TAG, "Successful login");
 
         User user = getUserDetails();
+
+        this.realm.executeTransaction(realm -> realm.where(User.class).findAll().deleteAllFromRealm());
         this.realm.executeTransactionAsync(realm -> realm.copyToRealmOrUpdate(user));
 
         startActivity(new Intent(this, MainMenuActivity.class));
@@ -144,7 +144,24 @@ public class LoginActivity extends AppCompatActivity {
         toast.show();
     }
 
-    private void handleError(Throwable error) {
+    private void handleLoginError(Throwable error){
+        Log.d(TAG, "Successful login with local data");
+
+        User user = getUserDetails();
+        User foundUser = realm.where(User.class).equalTo("username", user.getUsername()).findFirst();
+
+        if(foundUser == null || !foundUser.getPassword().equals(user.getPassword())) {
+            Log.d(TAG, "No user found");
+            Toast toast = Toast.makeText(this, "No user found", Toast.LENGTH_SHORT);
+            toast.show();
+        }  else{
+            Log.d(TAG, "Starting offline");
+            startActivity(new Intent(this, MainMenuActivity.class));
+        }
+
+    }
+
+    private void handleSignupError(Throwable error) {
         String errorMessage = "Failed at authentication";
 
         if (error instanceof HttpException) {

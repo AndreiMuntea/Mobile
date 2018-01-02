@@ -168,7 +168,8 @@ public class BooksActivity extends AppCompatActivity {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        this::handleGetAll
+                        this::handleGetAll,
+                        this::handleGetError
                 )
         );
     }
@@ -178,9 +179,14 @@ public class BooksActivity extends AppCompatActivity {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        this::handleGetMyBooks
+                        this::handleGetMyBooks,
+                        this::handleGetError
                 )
         );
+    }
+
+    private void handleGetError(Throwable error){
+
     }
 
     private void handleGetAll(List<BookDetails> books){
@@ -196,7 +202,8 @@ public class BooksActivity extends AppCompatActivity {
                             bookDTO.getDescription(),
                             bookDTO.getAuthor(),
                             bookDTO.getDate(),
-                            bookDTO.getTitle()
+                            bookDTO.getTitle(),
+                            bd.getRating()
                     );
                     for(TagDTO tagDTO : bd.getTags()){
                         b.getTags().add(new Tag(tagDTO.getTag()));
