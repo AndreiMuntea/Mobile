@@ -22,7 +22,7 @@ export default class SingleBookComponent extends Component{
             date: date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate(), 
             description: params.description, 
             tags: params.tags, 
-            rating:params.rating 
+            rating:Math.floor(params.rating)
         };
 
         this.store = this.props.screenProps.store;
@@ -40,7 +40,7 @@ export default class SingleBookComponent extends Component{
             // SUCCESS
             if (this.store.getState().bookReducer.data != null){
                 console.log(this.store.getState().bookReducer.data);
-                this.setState({...this.state, rating:this.store.getState().bookReducer.data});
+                this.setState({...this.state, rating:Math.floor(this.store.getState().bookReducer.data.rating)});
             }
           })
     }
@@ -84,6 +84,7 @@ export default class SingleBookComponent extends Component{
                 defaultRating={this.state.rating}
                 size={20}
                 onFinishRating={(rating) => this.rateBook(rating)}
+                extraData={this.state}
             />
       </View>
     );
