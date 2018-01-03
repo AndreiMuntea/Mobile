@@ -72,7 +72,7 @@ export default class LoginComponent extends Component{
             Alert.alert("Successful signup!");
         }else{
           console.log(this.store.getState().userReducer.error);
-          Alert.alert("Error at signup " + this.store.getState().userReducer.error.error);
+          Alert.alert("Error at signup " + this.store.getState().userReducer.error);
         }
       })
   }

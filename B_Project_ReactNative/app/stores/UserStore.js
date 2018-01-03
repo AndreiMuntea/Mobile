@@ -1,5 +1,6 @@
 import {User} from "../model/User"
 import {callServerPostAPI} from "./api"
+import {getItem, saveOrUpdate} from "../localStorage/LocalStorage"
 
 const initialState = {fetching: false, error: null, fetched: false, token: null, username: null};
 
@@ -40,14 +41,25 @@ export const userReducer = (state=initialState, action) => {
 export const login = (user) => async(dispatch) => {
     dispatch({type: LOGIN_PENDING});
 
-    var result = await callServerPostAPI("/login", {username: user.username,password: user.password});
+    
+    // try with local storage first
+    var foundUser = await getItem(user.username);
+    console.log("FOUND USER", foundUser);
 
-    if(result.token != null){
+    if(foundUser != null && foundUser.password === user.password){
         console.log("Login successful");
-        dispatch({type: LOGIN_FULFILLED, payload: {token: result.token, username: user.username}});
-    } else {
-        console.log("Login failed");
-        dispatch({type: LOGIN_ERROR, payload: result});
+        dispatch({type: LOGIN_FULFILLED, payload: {token: "1", username: user.username}});
+    }else{
+        var result = await callServerPostAPI("/login", {username: user.username,password: user.password});
+
+        if(result.token != null){
+            console.log("Login successful");
+            await saveOrUpdate(user.username, user);
+            dispatch({type: LOGIN_FULFILLED, payload: {token: result.token, username: user.username}});
+        } else {
+            console.log("Login failed");
+            dispatch({type: LOGIN_ERROR, payload: result});
+        }
     }
 } 
 

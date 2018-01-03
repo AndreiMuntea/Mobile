@@ -1,6 +1,7 @@
 import {Book} from "../model/Book"
 import {Tag} from "../model/Tag"
 import {callServerGetAPI, callServerPostAPI, callServerPutAPI} from "./api"
+import {getItem, saveOrUpdate, getAllBooksFromLocalStorage} from "../localStorage/LocalStorage"
 
 const initialState = {fetching: false, error: null, fetched: false, data: null, books: [], myBooks: []};
 
@@ -96,7 +97,7 @@ function fetchBook(result){
     return new Book(result._id, result.description, result.author, result.date, result.title, result.rating);
 }
 
-function fetchBooksFromResult(result){
+async function fetchBooksFromResult(result){
     var books = [];
 
     for(let i = 0; i < result.length; ++i){
@@ -112,6 +113,9 @@ function fetchBooksFromResult(result){
         }
     
         b.tags = tags;
+
+        await saveOrUpdate(b.id, b);
+
         books.push(b);
     }
 
@@ -122,12 +126,17 @@ function fetchBooksFromResult(result){
 export const getAllBooks = () => async(dispatch) => {
     dispatch({type: GET_ALL_BOOKS_PENDING});
 
+    // First get all from local storage
+    var locals = await getAllBooksFromLocalStorage();
+    console.log("LOOOCAAAALS", locals);
+    dispatch({type:GET_ALL_BOOKS_FULFILLED, payload:locals});
+
     var result = await callServerGetAPI("/books/get");
 
     if (result.status == false){
         dispatch({type: GET_ALL_BOOKS_ERROR, payload:result});
     } else {
-        let books = fetchBooksFromResult(result);
+        let books = await fetchBooksFromResult(result);
         dispatch({type: GET_ALL_BOOKS_FULFILLED, payload: books});
     }
 } 
@@ -136,13 +145,19 @@ export const getAllBooks = () => async(dispatch) => {
 export const getBooksForUser = (username) => async(dispatch) => {
     dispatch({type: GET_ALL_BOOKS_FOR_USER_PENDING});
 
+    var user = await getItem(username);
+    var locals = user.books;
+    dispatch({type:GET_ALL_BOOKS_FOR_USER_FULFILLED, payload:locals});
+
     var result = await callServerGetAPI("/books/get/username/" + username);
 
     if (result.status == false || result.error != undefined){
         dispatch({type: GET_ALL_BOOKS_FOR_USER_ERROR, payload:result});
     } else {
         let books = fetchBooksFromResult(result);
+        user.books = books;
         dispatch({type: GET_ALL_BOOKS_FOR_USER_FULFILLED, payload: books});
+        await saveOrUpdate(username, user);
     }
 } 
 

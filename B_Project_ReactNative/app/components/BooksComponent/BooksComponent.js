@@ -21,8 +21,31 @@ export default class BooksComponent extends Component{
         this.getMyBooks();
     }
 
+    updateState() {
+        const bookReducer = this.store.getState().bookReducer;
+        this.setState( {...this.state, books: bookReducer.books, myBooks: bookReducer.myBooks});
+        this.updateDisplayModel();
+        this.getPiechartData();
+        //console.log(state);
+      }
+      
+      componentWillMount() {
+        console.log('ComponentWillMount');
+        this.updateState();
+      }
+    
+      componentDidMount() {
+          console.log('ComponentDidMount');
+          this.unsubscribe = this.store.subscribe(() => this.updateState());
+      }
+    
+      componentWillUnmount() {
+        console.log('ComponentWillUnmount');
+        this.unsubscribe();
+      }
+    
+
     getPiechartData(){
-        console.log('ahahahahahah')
         var books = this.state.books;
         if (this.myScreen == true){
             books = this.state.myBooks;
@@ -107,25 +130,11 @@ export default class BooksComponent extends Component{
     }
 
     getAll(){
-        this.store.dispatch(getAllBooks())
-            .then(() => {
-                // SUCCESS
-                if (this.store.getState().bookReducer.data != null){
-                   this.setState({...this.state, books:this.store.getState().bookReducer.data});
-                }
-            });
+        this.store.dispatch(getAllBooks());
     }
 
     getMyBooks(){
-        this.store.dispatch(getBooksForUser(this.store.getState().userReducer.username))
-            .then(() => {
-                // SUCCESS
-                if (this.store.getState().bookReducer.data != null){
-                    this.setState({...this.state, myBooks:this.store.getState().bookReducer.data});
-                    this.updateDisplayModel();
-                    this.getPiechartData();
-                }
-            });
+        this.store.dispatch(getBooksForUser(this.store.getState().userReducer.username));
     }
 
       
@@ -146,6 +155,7 @@ export default class BooksComponent extends Component{
                         <Text style={styles.item}>{item.key}</Text>
                     </TouchableOpacity>
                 }
+                extraData={this.state}
             />
             {this.state.chartData.length !== 0 &&
                 <Bar data={this.state.chartData}
