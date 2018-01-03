@@ -154,9 +154,10 @@ export const getBooksForUser = (username) => async(dispatch) => {
     if (result.status == false || result.error != undefined){
         dispatch({type: GET_ALL_BOOKS_FOR_USER_ERROR, payload:result});
     } else {
-        let books = fetchBooksFromResult(result);
+        let books = await fetchBooksFromResult(result);
         user.books = books;
         dispatch({type: GET_ALL_BOOKS_FOR_USER_FULFILLED, payload: books});
+        console.log("UPDATING USER", user);
         await saveOrUpdate(username, user);
     }
 } 
