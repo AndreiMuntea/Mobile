@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {AppRegistry, View, StyleSheet, FlatList, Text, TouchableOpacity} from 'react-native';
 import {Rating} from 'react-native-ratings';
+import PieChart from 'react-native-pie-chart';
 
 import TextFieldComponent from "../InlineComponents/TextFieldComponent"
 import {getAllBooks, getBooksForUser} from "../../stores/BookStore"
@@ -10,7 +11,7 @@ export default class BooksComponent extends Component{
     constructor(props) {
         super(props);
 
-        this.state = {books: [], author: '', displayModel: [], myBooks: []}
+        this.state = {books: [], author: '', displayModel: [], myBooks: [], piechartData:[123, 321, 123, 789, 537], piechartColor:['#F44336','#2196F3','#FFEB3B', '#4CAF50', '#FF9800']}
         this.store = this.props.screenProps.store;
 
         const { params } = this.props.navigation.state;
@@ -18,6 +19,36 @@ export default class BooksComponent extends Component{
 
         this.getAll();
         this.getMyBooks();
+        //this.getPiechartData();
+    }
+
+    getPiechartData(){
+        var books = this.state.books;
+        if (this.myScreen == true){
+            books = this.state.myBooks;
+        }
+
+        var tags = {}
+        for(let i = 0; i < books.length; ++i){
+            for(let j = 0; j < books[i].tags.length; ++j){
+                let tag = books[i].tags[j];
+                if(!(tag.tag in tags)){
+                    tags.tag = 0
+                }
+                tags.tag++;
+            }
+        }
+
+        result = []
+        for(var key in tags){
+            result.push(tags[key]);
+            if(result.length === 5){
+                break;
+            }
+        }
+        console.log(tags);
+        console.log(result);
+        this.state.piechartData = result;
     }
 
     onItemClick(book){
@@ -118,6 +149,14 @@ export default class BooksComponent extends Component{
                     </TouchableOpacity>
                 }
             />
+            <PieChart
+                chart_wh={250}
+                series={this.state.piechartData}
+                sliceColor={this.state.piechartColor}
+                doughnut={true}
+                coverRadius={0.45}
+                coverFill={'#FFF'}
+          />
       </View>
     );
   }
@@ -125,7 +164,7 @@ export default class BooksComponent extends Component{
 
 const styles = StyleSheet.create({
     flatListViewStyle: {
-        height:400,
+        height:120,
         paddingLeft: 20,
         width: 350
     },

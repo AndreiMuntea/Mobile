@@ -84,7 +84,6 @@ export default class SingleBookComponent extends Component{
                 defaultRating={this.state.rating}
                 size={20}
                 onFinishRating={(rating) => this.rateBook(rating)}
-                extraData={this.state}
             />
       </View>
     );
