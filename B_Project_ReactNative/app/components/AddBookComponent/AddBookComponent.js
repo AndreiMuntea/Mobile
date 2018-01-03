@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {AppRegistry, View, StyleSheet, Text, TextInput, TouchableOpacity, FlatList} from 'react-native';
+import {AppRegistry, View, StyleSheet, Text, TextInput, TouchableOpacity, FlatList, Alert} from 'react-native';
 
 import TextFieldComponent from "../InlineComponents/TextFieldComponent"
 import DoubleButtonsComponent from "../InlineComponents/DoubleButtonComponent"
@@ -26,6 +26,9 @@ export default class AddBookComponent extends Component{
             if (book != null){        
                 console.log(book);
                 this.setState({...this.state, bookId: book.id})
+            } else{
+                console.log(this.store.getState().userReducer.error);
+                Alert.alert("Error at adding book " + this.store.getState().userReducer.error.error);
             }
         })
   }

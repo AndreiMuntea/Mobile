@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {AppRegistry, Text, View, TextInput, StyleSheet, TouchableOpacity} from 'react-native';
+import {AppRegistry, Text, View, TextInput, StyleSheet, TouchableOpacity, Alert} from 'react-native';
 
 import TextFieldComponent from "../InlineComponents/TextFieldComponent"
 import DoubleButtonsComponent from "../InlineComponents/DoubleButtonComponent"
@@ -69,7 +69,10 @@ export default class LoginComponent extends Component{
       .then(() => {
         // SUCCESS
         if (this.store.getState().userReducer.token != null){
-
+            Alert.alert("Successful signup!");
+        }else{
+          console.log(this.store.getState().userReducer.error);
+          Alert.alert("Error at signup " + this.store.getState().userReducer.error.error);
         }
       })
   }

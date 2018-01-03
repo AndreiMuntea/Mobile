@@ -41,6 +41,9 @@ export default class SingleBookComponent extends Component{
             if (this.store.getState().bookReducer.data != null){
                 console.log(this.store.getState().bookReducer.data);
                 this.setState({...this.state, rating:Math.floor(this.store.getState().bookReducer.data.rating)});
+            }else{
+                console.log(this.store.getState().userReducer.error);
+                Alert.alert("Error at rating " + this.store.getState().userReducer.error.error);
             }
           })
     }
