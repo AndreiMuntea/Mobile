@@ -1,17 +1,41 @@
 import React, {Component} from 'react';
-import {AppRegistry, View, StyleSheet, Image} from 'react-native';
+import {AppRegistry, View, StyleSheet, Image, TouchableOpacity} from 'react-native';
 
 
 export default class MainMenuComponent extends Component{
+  constructor(props) {
+    super(props);
+  }
 
   render(){
     return(
       <View style={styles.inlineView}>
-        <Image style={styles.imgView} source={require('./images/allbooks.png')} />
-        <Image style={styles.imgView} source={require('./images/mybooks.png')} />
-        <Image style={styles.imgView} source={require('./images/addbook.png')} />
+        <TouchableOpacity onPress={() => this.allBooksClick()}>
+          <Image style={styles.imgView} source={require('./images/allbooks.png')} />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => this.myBooksClick()}>
+          <Image style={styles.imgView} source={require('./images/mybooks.png')} />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => this.addBookClick()}>
+          <Image style={styles.imgView} source={require('./images/addbook.png')} />
+        </TouchableOpacity>
       </View>
     );
+  }
+
+  allBooksClick(){
+    const {navigate} = this.props.navigation;
+    navigate('BooksView');
+  }
+
+  myBooksClick(){
+    const {navigate} = this.props.navigation;
+    navigate('BooksView');
+  }
+
+  addBookClick(){
+    const {navigate} = this.props.navigation;
+    navigate('AddBook');
   }
 }
 

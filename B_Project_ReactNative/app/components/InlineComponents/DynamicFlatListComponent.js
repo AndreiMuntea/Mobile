@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
         flex: 0.89
     },
     flatListViewStyle: {
-        height: 161.83,
+        height: 101.83,
         paddingLeft: 160.2
     },
     inlineView: {

@@ -18,6 +18,7 @@ export class AuthentificationRouter extends Router{
     }
 
     async handleLoginRequest(context){
+		console.log(context)
         var requestBody = context.request.body;
 
         if (!requestBody.username || !requestBody.password){
