@@ -25,12 +25,12 @@ export default class MainMenuComponent extends Component{
 
   allBooksClick(){
     const {navigate} = this.props.navigation;
-    navigate('BooksView');
+    navigate('BooksView', {myBooksOnly:false});
   }
 
   myBooksClick(){
     const {navigate} = this.props.navigation;
-    navigate('BooksView');
+    navigate('BooksView', {myBooksOnly:true});
   }
 
   addBookClick(){

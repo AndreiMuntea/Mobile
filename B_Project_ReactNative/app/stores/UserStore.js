@@ -1,8 +1,7 @@
 import {User} from "../model/User"
-import {callServerAPI} from "./api"
-import {StackNavigator} from 'react-navigation'
+import {callServerPostAPI} from "./api"
 
-const initialState = {fetching: false, error: null, fetched: false, token: null};
+const initialState = {fetching: false, error: null, fetched: false, token: null, username: null};
 
 const LOGIN_PENDING = "LOGIN_PENDING"
 const LOGIN_FULFILLED = "LOGIN_FULFILLED"
@@ -16,16 +15,16 @@ const SIGNUP_ERROR = "SIGNUP_ERROR"
 export const userReducer = (state=initialState, action) => {
     switch(action.type){
         case LOGIN_PENDING: {
-            return {...state, fetching:true, fetched:false, error:null, token: null}
+            return {...state, fetching:true, fetched:false, error:null, token: null, username:null}
         }
         case LOGIN_FULFILLED: {
-            return {...state, fetching:false, fetched:true, token: action.payload}
+            return {...state, fetching:false, fetched:true, token: action.payload.token, username: action.payload.username}
         }
         case LOGIN_ERROR: {
             return {...state, fetching:false, error:action.payload, fetched:true}
         }
         case SIGNUP_PENDING: {
-            return {...state, fetching:true, fetched:false, error:null, token: null}
+            return {...state, fetching:true, fetched:false, error:null, token: null, username:null}
         }
         case SIGNUP_FULFILLED: {
             return {...state, fetching:false, fetched:true, token: action.payload}
@@ -41,11 +40,11 @@ export const userReducer = (state=initialState, action) => {
 export const login = (user) => async(dispatch) => {
     dispatch({type: LOGIN_PENDING});
 
-    var result = await callServerAPI("/login", "POST", {username: user.username,password: user.password});
+    var result = await callServerPostAPI("/login", {username: user.username,password: user.password});
 
     if(result.token != null){
         console.log("Login successful");
-        dispatch({type: LOGIN_FULFILLED, payload: result.token});
+        dispatch({type: LOGIN_FULFILLED, payload: {token: result.token, username: user.username}});
     } else {
         console.log("Login failed");
         dispatch({type: LOGIN_ERROR, payload: result});
@@ -55,7 +54,7 @@ export const login = (user) => async(dispatch) => {
 export const signup = (user) => async(dispatch) => {
     dispatch({type: SIGNUP_PENDING});
 
-    var result = await callServerAPI("/register", "POST", {username: user.username,password: user.password});
+    var result = await callServerPostAPI("/register", {username: user.username,password: user.password});
 
     if(result.token != null){
         console.log("Sign UP successful");

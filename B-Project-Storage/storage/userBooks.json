@@ -1,2 +1,9 @@
 {"username":"John","bookId":"3cTdVBR9IWbUqZaV","rating":1,"_id":"7e2LIprvZG1AExCt"}
 {"username":"John","bookId":"zIn0c3hrv8BSie9O","rating":4,"_id":"BS7l8kvMkeF6X8mX"}
+{"$$deleted":true,"_id":"7e2LIprvZG1AExCt"}
+{"username":"John","bookId":"3cTdVBR9IWbUqZaV","rating":2,"_id":"jDF6mmBsLZSpoAsl"}
+{"username":"John","bookId":"1Vn027Y2pQ3ISOdJ","rating":2,"_id":"EBJYwUbsCgPxETQX"}
+{"$$deleted":true,"_id":"EBJYwUbsCgPxETQX"}
+{"username":"John","bookId":"1Vn027Y2pQ3ISOdJ","rating":5,"_id":"L8i6S6ruz4uSVq5u"}
+{"$$deleted":true,"_id":"L8i6S6ruz4uSVq5u"}
+{"username":"John","bookId":"1Vn027Y2pQ3ISOdJ","rating":5,"_id":"HFZmXcjQUzzTThhx"}

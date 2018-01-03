@@ -99,6 +99,8 @@ export class BooksRouter extends Router{
     }
 
     async handleGetAllBooks(context){
+		
+		console.log('GETTING ALLL BOOOOOOKS');
         var books = await this.booksDatabase.cfind({}).exec();
 
         var results = [];
@@ -106,7 +108,7 @@ export class BooksRouter extends Router{
         for(let i = 0; i < books.length; ++i){
             console.log(books[i]);
             let tags = await this.bookTagsDatabase.cfind({bookId:books[i]["_id"]}).projection({tag:1, _id:0}).exec();
-            let rating = await this.calculateRating({bookId:books[i]["_id"]});
+            let rating = await this.calculateRating(books[i]["_id"]);
             results.push({book:books[i], tags:tags, rating:rating});
         }
         
@@ -277,10 +279,7 @@ export class BooksRouter extends Router{
         var r = 0.0;
         for(let i = 0; i < ratings.length; ++i){
             r = r + ratings[i]["rating"];
-            console.log(r);
         }
-
-        console.log("RATING for ", bookId, " : ", r/ratings.length);
 
         return r / ratings.length;
     }
@@ -295,11 +294,10 @@ export class BooksRouter extends Router{
         for(let i = 0; i < bookIds.length; ++i){
             let book = await this.booksDatabase.findOne({_id:bookIds[i]["bookId"]});
             let tags = await this.bookTagsDatabase.cfind({bookId:bookIds[i]["bookId"]}).projection({tag:1, _id:0}).exec();
-            let rating = await this.calculateRating({bookId:bookIds[i]["bookId"]});
+            let rating = await this.calculateRating(bookIds[i]["bookId"]);
             results.push({book:book, tags:tags, rating:rating});
+			console.log("rating for book:", rating)
         }
-                
         setStatus(context, OK, results);
-
     }
 }

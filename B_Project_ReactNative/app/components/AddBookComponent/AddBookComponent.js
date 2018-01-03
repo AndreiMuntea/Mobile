@@ -5,19 +5,50 @@ import TextFieldComponent from "../InlineComponents/TextFieldComponent"
 import DoubleButtonsComponent from "../InlineComponents/DoubleButtonComponent"
 import DynamicFlatListComponent from "../InlineComponents/DynamicFlatListComponent"
 
+import {addBook, tagBook} from "../../stores/BookStore"
+import {Book} from "../../model/Book"
+
 export default class AddBookComponent extends Component{
     constructor(props) {
         super(props);
         
         this.state = {bookId: '', title: '', author: '', publicationDate: '', description: '', tags: []};
+        this.store = this.props.screenProps.store;
     }
 
   addBookButtonClicked(){
+    let b = new Book("", this.state.description, this.state.author, this.state.publicationDate, this.state.title, 0.0);
 
+    this.store.dispatch(addBook(b))
+        .then(() => {
+            book = this.store.getState().bookReducer.data;
+            // SUCCESS
+            if (book != null){        
+                console.log(book);
+                this.setState({...this.state, bookId: book.id})
+            }
+        })
   }
 
   tagBookButtonClicked(){
+    for(let i = 0; i < this.state.tags.length; ++i){
+        this.store.dispatch(tagBook(this.state.bookId, this.state.tags[i].tag))
+            .then(() => {
+                book = this.store.getState().bookReducer.data;
+                // SUCCESS
+                if (book != null){        
+                    console.log(book);
+                }
+            })
+    }
+  }
 
+  newTagAdded(tag){
+    let tags = this.state.tags;
+    tags.push(tag);
+
+    console.log(tags);
+    this.setState({...this.state, tags:tags});
   }
 
   render(){
@@ -25,52 +56,38 @@ export default class AddBookComponent extends Component{
         <View style={styles.parentView}>
             <TextFieldComponent 
                 label='Book ID' 
-                initialText="" 
+                initialText={this.state.bookId}
                 editableInputType={true} 
-                textUpdated={(text) => this.state.bookId = text}
+                textUpdated={(text) => this.setState({...this.state, bookId:text})}
             />
             <TextFieldComponent 
                 label='Title' 
-                initialText="" 
+                initialText={this.state.title}
                 editableInputType={true} 
-                textUpdated={(text) => this.state.title = text}
+                textUpdated={(text) => this.setState({...this.state, title:text})}
             />
             <TextFieldComponent 
                 label='Author' 
-                initialText="" 
+                initialText={this.state.author}
                 editableInputType={true} 
-                textUpdated={(text) => this.state.author = text}
+                textUpdated={(text) => this.setState({...this.state, author:text})}
             />
             <TextFieldComponent 
                 label='Publication Date' 
-                initialText="" 
+                initialText={this.state.publicationDate}
                 editableInputType={true} 
-                textUpdated={(text) => this.state.publicationDate = text}
+                textUpdated={(text) => this.setState({...this.state, publicationDate:text})}
             />
             <TextFieldComponent 
                 label='Description' 
-                initialText="" 
+                initialText={this.state.description}
                 editableInputType={true} 
-                textUpdated={(text) => this.state.description = text}
+                textUpdated={(text) => this.setState({...this.state, description:text})}
             />
-            <DynamicFlatListComponent label='Tags' data={[
-                    {key: 'Devin'},
-                    {key: 'Jackson'},
-                    {key: 'James'},
-                    {key: 'Joel'},
-                    {key: 'John'},
-                    {key: 'Jillian'},
-                    {key: 'Jimmy'},
-                    {key: 'Julie'},
-                    {key: 'Devin'},
-                    {key: 'Jackson'},
-                    {key: 'James'},
-                    {key: 'Joel'},
-                    {key: 'John'},
-                    {key: 'Jillian'},
-                    {key: 'Jimmy'},
-                    {key: 'Julie'},
-                ]} 
+            <DynamicFlatListComponent 
+                label='Tags' 
+                data={this.state.tags}
+                newItemCallback={(tag) => this.newTagAdded(tag)}
             />
             <DoubleButtonsComponent
                 firstButtonLabel='Add Book'

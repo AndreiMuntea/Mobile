@@ -3,6 +3,32 @@ import {AppRegistry, Text, TextInput, View, FlatList, StyleSheet, TouchableOpaci
 
 
 export default class DynamicFlatListComponent extends Component{
+
+  constructor(props) {
+    super(props);
+    
+    this.state = {newTag: '', model: []};
+    console.log("constructor");
+  }
+
+  addTag(){
+      let tag = this.state.newTag;
+      let model = this.state.model;
+
+      for(let i = 0; i < model.length; ++i){
+          if(JSON.stringify({key:tag}) === JSON.stringify(model[i])){
+              return;
+          } 
+      }
+      
+      model.push({key:tag});
+      console.log("MODEL");
+      this.setState({...this.state, model:model});
+
+      this.props.newItemCallback({key:tag});
+  }
+
+
   render(){
     return(
         <View>
@@ -11,17 +37,20 @@ export default class DynamicFlatListComponent extends Component{
                 <TextInput
                         style={styles.textField}
                         placeholder=""
+                        onChangeText={(text) => this.setState({...this.state, newTag:text})}
                 />
                 <TouchableOpacity
                     style={styles.buttonStyle}
+                    onPress={() => this.addTag()}
                 >
                     <Text style={styles.buttonTextStyle}>+</Text>
                 </TouchableOpacity>
             </View>
             <FlatList
                 style={styles.flatListViewStyle}
-                data={this.props.data}
+                data={this.state.model}
                 renderItem={({item}) => <Text style={styles.item}>{item.key}</Text>}
+                extraData={this.state}
             />
         </View>
     );

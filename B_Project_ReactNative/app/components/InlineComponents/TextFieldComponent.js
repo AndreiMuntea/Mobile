@@ -9,9 +9,10 @@ export default class TextFieldComponent extends Component{
             <Text style={styles.textView}>{this.props.label}: </Text>
             <TextInput
                 style={styles.textField}
-                placeholder={this.props.initialText}
+                defaultValue={this.props.initialText}
                 editable={this.props.editableInputType}
                 onChangeText={(text) => this.props.textUpdated(text)}
+                multiline={true}
             />
         </View>
     );
@@ -26,8 +27,8 @@ const styles = StyleSheet.create({
     },
     textField: {
         fontSize: 14,
-        flex: 0.9
-
+        flex: 0.9,
+        height:50
     },
     inlineView: {
         flexDirection: 'row',
