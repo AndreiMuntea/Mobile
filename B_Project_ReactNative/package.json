@@ -12,6 +12,7 @@
     "lodash.times": "^4.3.2",
     "react": "16.0.0",
     "react-native": "0.51.0",
+    "react-native-pathjs-charts": "0.0.33",
     "react-native-pie-chart": "^1.0.12",
     "react-native-ratings": "^4.1.0",
     "react-navigation": "^1.0.0-beta.22",

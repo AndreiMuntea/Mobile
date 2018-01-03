@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
-import {AppRegistry, View, StyleSheet, FlatList, Text, TouchableOpacity} from 'react-native';
+import {AppRegistry, View, StyleSheet, FlatList, Text, TouchableOpacity, StatusBar, ScrollView} from 'react-native';
 import {Rating} from 'react-native-ratings';
-import PieChart from 'react-native-pie-chart';
+import { Bar } from 'react-native-pathjs-charts'
 
 import TextFieldComponent from "../InlineComponents/TextFieldComponent"
 import {getAllBooks, getBooksForUser} from "../../stores/BookStore"
@@ -11,7 +11,7 @@ export default class BooksComponent extends Component{
     constructor(props) {
         super(props);
 
-        this.state = {books: [], author: '', displayModel: [], myBooks: [], piechartData:[123, 321, 123, 789, 537], piechartColor:['#F44336','#2196F3','#FFEB3B', '#4CAF50', '#FF9800']}
+        this.state = {books: [], author: '', displayModel: [], myBooks: [], chartData:[]}
         this.store = this.props.screenProps.store;
 
         const { params } = this.props.navigation.state;
@@ -19,10 +19,10 @@ export default class BooksComponent extends Component{
 
         this.getAll();
         this.getMyBooks();
-        //this.getPiechartData();
     }
 
     getPiechartData(){
+        console.log('ahahahahahah')
         var books = this.state.books;
         if (this.myScreen == true){
             books = this.state.myBooks;
@@ -33,22 +33,20 @@ export default class BooksComponent extends Component{
             for(let j = 0; j < books[i].tags.length; ++j){
                 let tag = books[i].tags[j];
                 if(!(tag.tag in tags)){
-                    tags.tag = 0
+                    tags[tag.tag] = 0
+                    console.log("TAAAAAAAAAAGS", tags);
                 }
-                tags.tag++;
+                tags[tag.tag]++;
             }
         }
 
         result = []
         for(var key in tags){
-            result.push(tags[key]);
-            if(result.length === 5){
-                break;
-            }
+            result.push([{tag: key, amount:tags[key]}]);
         }
         console.log(tags);
         console.log(result);
-        this.state.piechartData = result;
+        this.setState({...this.state, chartData:result});
     }
 
     onItemClick(book){
@@ -114,7 +112,6 @@ export default class BooksComponent extends Component{
                 // SUCCESS
                 if (this.store.getState().bookReducer.data != null){
                    this.setState({...this.state, books:this.store.getState().bookReducer.data});
-                   this.updateDisplayModel();
                 }
             });
     }
@@ -126,6 +123,7 @@ export default class BooksComponent extends Component{
                 if (this.store.getState().bookReducer.data != null){
                     this.setState({...this.state, myBooks:this.store.getState().bookReducer.data});
                     this.updateDisplayModel();
+                    this.getPiechartData();
                 }
             });
     }
@@ -133,7 +131,7 @@ export default class BooksComponent extends Component{
       
   render(){
     return(
-        <View style={styles.parentView}>
+        <View>
             <TextFieldComponent 
                 label='Author' 
                 initialText='' 
@@ -149,22 +147,70 @@ export default class BooksComponent extends Component{
                     </TouchableOpacity>
                 }
             />
-            <PieChart
-                chart_wh={250}
-                series={this.state.piechartData}
-                sliceColor={this.state.piechartColor}
-                doughnut={true}
-                coverRadius={0.45}
-                coverFill={'#FFF'}
-          />
+            {this.state.chartData.length !== 0 &&
+                <Bar data={this.state.chartData}
+                     options={this.options}
+                     accessorKey="amount"
+                />
+            }
       </View>
     );
   }
+
+      /*
+    Options for chart display
+     */
+    options = {
+        width: 300,
+        height: 300,
+        margin: {
+            top: 20,
+            left: 25,
+            bottom: 50,
+            right: 20
+        },
+        color: '#2980B9',
+        gutter: 20,
+        animate: {
+            type: 'oneByOne',
+            duration: 200,
+            fillTransition: 3
+        },
+        axisX: {
+            showAxis: true,
+            showLines: true,
+            showLabels: true,
+            showTicks: true,
+            zeroAxis: false,
+            orient: 'bottom',
+            label: {
+                fontFamily: 'Arial',
+                fontSize: 8,
+                fontWeight: true,
+                fill: '#34495E',
+                rotate: 45
+            }
+        },
+        axisY: {
+            showAxis: true,
+            showLines: true,
+            showLabels: true,
+            showTicks: true,
+            zeroAxis: false,
+            orient: 'left',
+            label: {
+                fontFamily: 'Arial',
+                fontSize: 8,
+                fontWeight: true,
+                fill: '#34495E'
+            }
+        }
+    };
 }
 
 const styles = StyleSheet.create({
     flatListViewStyle: {
-        height:120,
+        height:160,
         paddingLeft: 20,
         width: 350
     },
