@@ -83,6 +83,15 @@
             android:layout_below="@+id/signupButton"
             android:layout_marginTop="80dp" />
 
+        <Button
+            android:id="@+id/supportButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:onClick="handleSupportButton"
+            android:text="Support" />
+
     </RelativeLayout>
 
 </android.support.constraint.ConstraintLayout>

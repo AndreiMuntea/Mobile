@@ -2,3 +2,7 @@
 {"username":"John2","bookId":"1Vn027Y2pQ3ISOdJ","rating":5,"_id":"KZ0VwtP2CVYAWCyy"}
 {"username":"John","bookId":"3cTdVBR9IWbUqZaV","rating":2,"_id":"jDF6mmBsLZSpoAsl"}
 {"username":"John","bookId":"1Vn027Y2pQ3ISOdJ","rating":4,"_id":"p0FdC3XxGkUcEBmF"}
+{"$$deleted":true,"_id":"jDF6mmBsLZSpoAsl"}
+{"username":"John","bookId":"3cTdVBR9IWbUqZaV","rating":4,"_id":"8jCNYUOMWoufgmfT"}
+{"$$deleted":true,"_id":"8jCNYUOMWoufgmfT"}
+{"username":"John","bookId":"3cTdVBR9IWbUqZaV","rating":4,"_id":"uaVJgLlnZ9hDjZ2q"}

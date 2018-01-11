@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {AppRegistry, Text, View, TextInput, StyleSheet, TouchableOpacity, Alert} from 'react-native';
+import email from 'react-native-email'
 
 import TextFieldComponent from "../InlineComponents/TextFieldComponent"
 import DoubleButtonsComponent from "../InlineComponents/DoubleButtonComponent"
@@ -77,6 +78,14 @@ export default class LoginComponent extends Component{
       })
   }
 
+  handleEmail(){
+    const to = [''];
+    email(to, {
+        subject: 'TROUBLESHOOT',
+        body: JSON.stringify("EMAIL")
+    }).catch(console.error)
+  }
+
   render(){
     return(
       <View style={styles.parentView}>
@@ -96,6 +105,12 @@ export default class LoginComponent extends Component{
                 secondButtonLabel='Signup'
                 secondButtonClicked={() => this.signupButtonClicked()}
             />
+            <TouchableOpacity
+                style={styles.buttonStyle}
+                onPress={() => this.handleEmail()}
+            >
+                <Text style={styles.textView}>Support</Text>
+            </TouchableOpacity>
       </View>
     );
   }
@@ -106,6 +121,21 @@ const styles = StyleSheet.create({
         marginTop: 200,
         justifyContent: 'center',
         alignItems: 'center'
+    },
+    textView: {
+      fontSize: 20,
+      padding: 10,
+    },
+    inlineView: {
+        flexDirection: 'row',
+        padding: 10
+    },
+    buttonStyle:{
+        alignItems: 'center',
+        backgroundColor: '#DDDDDD',
+        position: 'absolute',
+        right: 50,
+        top: 300
     }
 });
 

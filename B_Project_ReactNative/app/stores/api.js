@@ -1,4 +1,4 @@
-const serverUrl = 'http://192.168.0.20:3000';
+const serverUrl = 'http://192.168.0.50:3000';
 const headers = {
     'Accept': 'application/json',
     'Content-Type': 'application/json'
