@@ -1,7 +1,10 @@
 package com.andrei.b_project.views;
 
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.Color;
+import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -15,6 +18,7 @@ import com.andrei.b_project.R;
 import com.andrei.b_project.domain.Book;
 import com.andrei.b_project.domain.Tag;
 import com.andrei.b_project.domain.User;
+import com.andrei.b_project.net.SocketService;
 import com.andrei.b_project.net.book.BookClient;
 import com.andrei.b_project.net.book.Responses.BookDTO;
 import com.andrei.b_project.net.book.Responses.BookDetails;
@@ -35,14 +39,16 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 import io.realm.Realm;
+import io.realm.RealmChangeListener;
 import io.realm.RealmList;
 
-public class BooksActivity extends AppCompatActivity {
+public class BooksActivity extends AppCompatActivity  implements ServiceConnection{
 
     private static final String TAG = BooksActivity.class.getSimpleName();
     private BookClient bookClient;
 
     private CompositeDisposable disposables = new CompositeDisposable();
+    private RealmChangeListener realmChangeListener = realm -> solveView();
 
     private ListView listView;
     private List<Book> displayedBooks;
@@ -52,6 +58,7 @@ public class BooksActivity extends AppCompatActivity {
     private Realm realm;
 
     private User user;
+    private Boolean myBooksOnly;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,19 +77,14 @@ public class BooksActivity extends AppCompatActivity {
 
         realm.executeTransaction(realm -> this.user = realm.where(User.class).findFirst());
 
-        Boolean myBooksOnly = getIntent().getExtras().getBoolean("myBooks");
+        this.myBooksOnly = getIntent().getExtras().getBoolean("myBooks");
 
         getAll();
 
         Log.d(TAG,user.getUsername());
 
-        if (!myBooksOnly){
-            realm.executeTransaction(realm -> {
-                solveView(realm.where(Book.class).findAll());
-            });
-        }else{
-            solveView(user.getBooks());
-        }
+        solveView();
+
 
         listView.setOnItemClickListener((adapterView, view, i, l) -> {
             Book book = (Book) adapterView.getItemAtPosition(i);
@@ -118,6 +120,9 @@ public class BooksActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
+        bindService(new Intent(this, SocketService.class), this, BIND_AUTO_CREATE);
+        realm.addChangeListener(realmChangeListener);
+
         Log.d(TAG, "The onStart() event");
     }
 
@@ -146,6 +151,8 @@ public class BooksActivity extends AppCompatActivity {
      */
     @Override
     protected void onStop() {
+        unbindService(this);
+        realm.removeAllChangeListeners();
         super.onStop();
 
         Log.d(TAG, "The onStop() event");
@@ -231,7 +238,8 @@ public class BooksActivity extends AppCompatActivity {
         }
     }
 
-    private void solveView(List<Book> books){
+    private void solveView(){
+        List<Book> books = (myBooksOnly) ? user.getBooks() : realm.where(Book.class).findAll();
         Set<String> authors = new HashSet<>();
 
         for(Book b : books){
@@ -305,6 +313,16 @@ public class BooksActivity extends AppCompatActivity {
         this.pieChart.setCenterTextSize(24);
         this.pieChart.setDescription("Hottest books");
         this.pieChart.setDescriptionTextSize(16);
+
+    }
+
+    @Override
+    public void onServiceConnected(ComponentName name, IBinder service) {
+
+    }
+
+    @Override
+    public void onServiceDisconnected(ComponentName name) {
 
     }
 }

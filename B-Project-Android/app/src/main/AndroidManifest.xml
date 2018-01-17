@@ -22,7 +22,12 @@
         <activity android:name=".views.BooksActivity" />
         <activity android:name=".views.MainMenuActivity" />
         <activity android:name=".views.SingleBookActivity" />
-        <activity android:name=".views.AddBookActivity"></activity>
+        <activity android:name=".views.AddBookActivity" />
+
+        <service
+            android:name=".net.SocketService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>

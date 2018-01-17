@@ -5,6 +5,7 @@ import email from 'react-native-email'
 import TextFieldComponent from "../InlineComponents/TextFieldComponent"
 import DoubleButtonsComponent from "../InlineComponents/DoubleButtonComponent"
 import PasswordComponent from "../InlineComponents/PasswordComponent"
+import FadeInView from "../InlineComponents/FadeInView"
 
 import {login, signup} from "../../stores/UserStore"
 import {User} from "../../model/User"
@@ -106,10 +107,13 @@ export default class LoginComponent extends Component{
                 secondButtonClicked={() => this.signupButtonClicked()}
             />
             <TouchableOpacity
-                style={styles.buttonStyle}
-                onPress={() => this.handleEmail()}
+                  style={styles.buttonStyle}
+                  onPress={() => this.handleEmail()}
             >
-                <Text style={styles.textView}>Support</Text>
+                <FadeInView>
+                  <Text style={styles.textView}>Support</Text>
+                  </FadeInView>
+
             </TouchableOpacity>
       </View>
     );

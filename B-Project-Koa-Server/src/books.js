@@ -11,6 +11,7 @@ export class BooksRouter extends Router{
         this.bookTagsDatabase = args.bookTagsDatabase;
         this.userBooksDatabase = args.userBooksDatabase;
         this.usersDatabase = args.usersDatabase;
+        this.socket = args.serverSocket;
 
         this.put('/books/add', async (context, next)=>{
             await this.handleAddBook(context);
@@ -92,6 +93,7 @@ export class BooksRouter extends Router{
         console.log(retBook);
 
         setStatus(context, OK, {title: retBook["title"], author: retBook["author"], date: retBook["date"], description: retBook["description"], _id:retBook["_id"]});
+        this.socket.emit("book-added", {title: retBook["title"], author: retBook["author"], date: retBook["date"], description: retBook["description"], _id:retBook["_id"]})
     }
 
     async findBook(title, author, date){
@@ -176,6 +178,8 @@ export class BooksRouter extends Router{
 
         await this.bookTagsDatabase.insert([{bookId:bookId, tag:tag}]);
         setStatus(context, OK, {});
+        
+        this.socket.emit("book-tagged", {bookId: bookId, tag:tag});
     }
 
     async handleGetBooksWithTag(context){
@@ -208,6 +212,7 @@ export class BooksRouter extends Router{
         await this.userBooksDatabase.remove({_bookId:bookId}, {multi:true});
 
         setStatus(context, OK, {});
+        this.socket.emit("book-deleted", {bookId:bookId});
     }
 
     async handleRateBook(context){
@@ -252,6 +257,7 @@ export class BooksRouter extends Router{
 
         var retRating = await this.calculateRating(bookId);
         setStatus(context, OK, {rating: retRating});
+        this.socket.emit("book-rated", {bookId:bookId, rating:retRating});
     }
 
     async handleGetSpecificBook(context){

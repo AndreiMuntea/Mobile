@@ -13,7 +13,6 @@ import {BooksRouter} from './books';
 const app = new Koa();
 const server = http.createServer(app.callback());
 const serverSocket = SocketIo(server);
-const connections = {};
 
 // Database stuffs
 const usersDatabase = new DataStore({filename: '../B-Project-Storage/storage/users.json', autoload: true});
@@ -24,7 +23,7 @@ const userBooksDatabase  = new DataStore({filename: '../B-Project-Storage/storag
 
 // Custom routes
 const authentificationRouter = new AuthentificationRouter({usersDatabase});
-const booksRouter = new BooksRouter({booksDatabase, tagsDatabase, bookTagsDatabase, userBooksDatabase, usersDatabase});
+const booksRouter = new BooksRouter({booksDatabase, tagsDatabase, bookTagsDatabase, userBooksDatabase, usersDatabase, serverSocket});
 
 app.use(BodyParser());
 app.use(Convert(Cors()));
@@ -32,35 +31,4 @@ app.use(Convert(Cors()));
 app.use(authentificationRouter.routes()).use(authentificationRouter.allowedMethods());
 app.use(booksRouter.routes()).use(booksRouter.allowedMethods());
 
-
-// serverSocket.on('connection', (socket) => {
-//     socket.on('userConnect', (data) =>{
-//         handleUserConnect(socket, data);
-//     });
-//     socket.on("userDisconnect", (data) => {
-//         handleUserDisconnect(socket, data);
-//     });
-// });
-
-// function handleUserConnect(socket, data){
-//     console.log("New Connection: " + data);
-
-//     if(connections[data] == undefined){
-//         connections[data] = [];
-//     }
-
-//     connections[data].push(socket);
-// }
-
-// function handleUserDisconnect(socket, data){
-//     console.log("Disconnected: " + data);
-
-//     if(socket != undefined && connections[data] != undefined){
-//         var index = connections[data].indexOf(socket);
-//         if(index > -1){
-//             connections[data].splice(index, 1);
-//         }
-//     }
-// }
-
-app.listen(3000);
+server.listen(3000);
