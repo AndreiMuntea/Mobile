@@ -19,7 +19,7 @@ export default class AddBookComponent extends Component{
   addBookButtonClicked(){
     let b = new Book("", this.state.description, this.state.author, this.state.publicationDate, this.state.title, 0.0);
 
-    this.store.dispatch(addBook(b))
+    this.store.dispatch(addBook(this.store.getState().userReducer.token, b))
         .then(() => {
             book = this.store.getState().bookReducer.data;
             // SUCCESS
@@ -35,7 +35,7 @@ export default class AddBookComponent extends Component{
 
   tagBookButtonClicked(){
     for(let i = 0; i < this.state.tags.length; ++i){
-        this.store.dispatch(tagBook(this.state.bookId, this.state.tags[i].tag))
+        this.store.dispatch(tagBook(this.store.getState().userReducer.token, this.state.bookId, this.state.tags[i].tag))
             .then(() => {
                 book = this.store.getState().bookReducer.data;
                 // SUCCESS

@@ -1,6 +1,6 @@
 import {Book} from "../model/Book"
 import {Tag} from "../model/Tag"
-import {callServerGetAPI, callServerPostAPI, callServerPutAPI} from "./api"
+import {callServerGetAPI, callServerPostAPI, callServerPutAPI, authHeaders} from "./api"
 import {getItem, saveOrUpdate, getAllBooksFromLocalStorage} from "../localStorage/LocalStorage"
 
 const initialState = {fetching: false, error: null, fetched: false, data: null, books: [], myBooks: []};
@@ -123,7 +123,7 @@ async function fetchBooksFromResult(result){
 }
 
 
-export const getAllBooks = () => async(dispatch) => {
+export const getAllBooks = (token) => async(dispatch) => {
     dispatch({type: GET_ALL_BOOKS_PENDING});
 
     // First get all from local storage
@@ -131,7 +131,7 @@ export const getAllBooks = () => async(dispatch) => {
     console.log("LOOOCAAAALS", locals);
     dispatch({type:GET_ALL_BOOKS_FULFILLED, payload:locals});
 
-    var result = await callServerGetAPI("/books/get");
+    var result = await callServerGetAPI("/books/get", null, authHeaders(token));
 
     if (result.status == false){
         dispatch({type: GET_ALL_BOOKS_ERROR, payload:result});
@@ -142,14 +142,14 @@ export const getAllBooks = () => async(dispatch) => {
 } 
 
 
-export const getBooksForUser = (username) => async(dispatch) => {
+export const getBooksForUser = (token, username) => async(dispatch) => {
     dispatch({type: GET_ALL_BOOKS_FOR_USER_PENDING});
 
     var user = await getItem(username);
     var locals = user.books;
     dispatch({type:GET_ALL_BOOKS_FOR_USER_FULFILLED, payload:locals});
 
-    var result = await callServerGetAPI("/books/get/username/" + username);
+    var result = await callServerGetAPI("/books/get/username/" + username, null, authHeaders(token));
 
     if (result.status == false || result.error != undefined){
         dispatch({type: GET_ALL_BOOKS_FOR_USER_ERROR, payload:result});
@@ -163,12 +163,12 @@ export const getBooksForUser = (username) => async(dispatch) => {
 } 
 
 
-export const addBook = (book) => async(dispatch) => {
+export const addBook = (token, book) => async(dispatch) => {
     dispatch({type: ADD_BOOK_PENDING});
 
     console.log(book);
 
-    var result = await callServerPutAPI("/books/add", book);
+    var result = await callServerPutAPI("/books/add", book, authHeaders(token));
 
     if (result.status == false || result.error != undefined){
         dispatch({type: ADD_BOOK_ERROR, payload:result});
@@ -178,9 +178,9 @@ export const addBook = (book) => async(dispatch) => {
     }
 }
 
-export const tagBook = (bookId, tag) => async(dispatch) => {
+export const tagBook = (token, bookId, tag) => async(dispatch) => {
     dispatch({type: TAG_BOOK_PENDING});
-    var result = await callServerPutAPI("/books/tagBook/" + bookId + "/" + tag, {});
+    var result = await callServerPutAPI("/books/tagBook/" + bookId + "/" + tag, {}, authHeaders(token));
 
     if (result.status == false || result.error != undefined){
         dispatch({type: TAG_BOOK_ERROR, payload:result});
@@ -189,9 +189,9 @@ export const tagBook = (bookId, tag) => async(dispatch) => {
     }
 }
 
-export const rateBook = (username, bookId, rating) => async(dispatch) => {
+export const rateBook = (token, username, bookId, rating) => async(dispatch) => {
     dispatch({type: RATE_BOOK_PENDING});
-    var result = await callServerPutAPI("/books/rate/" + username + "/" + bookId, {rating: rating});
+    var result = await callServerPutAPI("/books/rate/" + username + "/" + bookId, {rating: rating}, authHeaders(token));
 
     if (result.status == false || result.error != undefined){
         dispatch({type: RATE_BOOK_ERROR, payload:result});

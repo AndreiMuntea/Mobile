@@ -130,11 +130,12 @@ export default class BooksComponent extends Component{
     }
 
     getAll(){
-        this.store.dispatch(getAllBooks());
+        
+        this.store.dispatch(getAllBooks(this.store.getState().userReducer.token));
     }
 
     getMyBooks(){
-        this.store.dispatch(getBooksForUser(this.store.getState().userReducer.username));
+        this.store.dispatch(getBooksForUser(this.store.getState().userReducer.token, this.store.getState().userReducer.username));
     }
 
       

@@ -1,5 +1,5 @@
 import {User} from "../model/User"
-import {callServerPostAPI} from "./api"
+import {callServerPostAPI, headers} from "./api"
 import {getItem, saveOrUpdate} from "../localStorage/LocalStorage"
 
 const initialState = {fetching: false, error: null, fetched: false, token: null, username: null};
@@ -50,7 +50,7 @@ export const login = (user) => async(dispatch) => {
         console.log("Login successful");
         dispatch({type: LOGIN_FULFILLED, payload: {token: "1", username: user.username}});
     }else{
-        var result = await callServerPostAPI("/login", {username: user.username,password: user.password});
+        var result = await callServerPostAPI("/login", {username: user.username,password: user.password}, headers);
 
         if(result.token != null){
             console.log("Login successful");
@@ -66,7 +66,7 @@ export const login = (user) => async(dispatch) => {
 export const signup = (user) => async(dispatch) => {
     dispatch({type: SIGNUP_PENDING});
 
-    var result = await callServerPostAPI("/register", {username: user.username,password: user.password});
+    var result = await callServerPostAPI("/register", {username: user.username,password: user.password}, headers);
 
     if(result.token != null){
         console.log("Sign UP successful");

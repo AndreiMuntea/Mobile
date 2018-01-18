@@ -1,11 +1,12 @@
 const serverUrl = 'http://192.168.0.50:3000';
-const headers = {
+export const headers = {
     'Accept': 'application/json',
     'Content-Type': 'application/json'
 };
 
+export const authHeaders = (token) => ({...headers, 'Authorization': `Bearer ${token}`});
 
-export const callServerPostAPI = async(suffix, body) =>{
+export const callServerPostAPI = async(suffix, body, headers) =>{
     let result = await fetch(serverUrl + suffix, {method: "POST", headers, body: JSON.stringify(body)})
     .then((response) => response.json())
     .then((response) => {
@@ -18,7 +19,7 @@ export const callServerPostAPI = async(suffix, body) =>{
     return result;
 }
 
-export const callServerPutAPI = async(suffix, body) =>{
+export const callServerPutAPI = async(suffix, body, headers) =>{
     let result = await fetch(serverUrl + suffix, {method: "PUT", headers, body: JSON.stringify(body)})
     .then((response) => response.json())
     .then((response) => {
@@ -31,7 +32,7 @@ export const callServerPutAPI = async(suffix, body) =>{
     return result;
 }
 
-export const callServerGetAPI = async(suffix, body) =>{
+export const callServerGetAPI = async(suffix, body, headers) =>{
     let result = await fetch(serverUrl + suffix)
     .then((response) => response.json())
     .then((response) => {
