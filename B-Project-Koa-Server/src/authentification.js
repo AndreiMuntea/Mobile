@@ -1,6 +1,15 @@
 import Router from 'koa-router';
 import {setStatus, OK, BAD_REQUEST} from "./utils.js";
+import jwt from 'jsonwebtoken';
 
+export const jwtConfig = {
+    secret: 'my-secret'
+}
+
+function createToken(user) {
+    return jwt.sign({username: user.username, _id: user._id},
+        jwtConfig.secret, {expiresIn: 60*60*60});
+}
 
 export class AuthentificationRouter extends Router{
     constructor(args){
@@ -39,7 +48,7 @@ export class AuthentificationRouter extends Router{
             return;
         };
 
-        setStatus(context, OK, {token: '1'});
+        setStatus(context, OK, {token: createToken(requestBody.username)});
     }
 
     async handleRegisterRequest(context){

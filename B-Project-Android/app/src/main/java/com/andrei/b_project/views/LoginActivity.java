@@ -139,6 +139,7 @@ public class LoginActivity extends AppCompatActivity {
         this.progressBar.setVisibility(View.GONE);
 
         User user = getUserDetails();
+        user.setToken(tokenDTO.getToken());
 
         this.realm.executeTransaction(realm -> realm.where(User.class).findAll().deleteAllFromRealm());
         this.realm.executeTransactionAsync(realm -> realm.copyToRealmOrUpdate(user));

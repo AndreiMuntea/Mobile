@@ -16,16 +16,20 @@ public class User extends RealmObject {
     @Required
     private String password;
 
+    private String token;
+
     private RealmList<Book> books;
 
     public User(String username, String password) {
         this.username = username;
         this.password = password;
         this.books = new RealmList<>();
+        this.token = "";
     }
 
     public User() {
         this.books = new RealmList<>();
+        this.token = "";
     }
 
     public String getUsername() {
@@ -50,5 +54,13 @@ public class User extends RealmObject {
 
     public void setBooks(RealmList<Book> books) {
         this.books = books;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }

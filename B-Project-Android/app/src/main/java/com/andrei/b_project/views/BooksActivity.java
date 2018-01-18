@@ -23,6 +23,7 @@ import com.andrei.b_project.net.book.BookClient;
 import com.andrei.b_project.net.book.Responses.BookDTO;
 import com.andrei.b_project.net.book.Responses.BookDetails;
 import com.andrei.b_project.net.book.Responses.TagDTO;
+import com.andrei.b_project.utils.Utils;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
@@ -59,6 +60,7 @@ public class BooksActivity extends AppCompatActivity  implements ServiceConnecti
 
     private User user;
     private Boolean myBooksOnly;
+    private String auth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +80,7 @@ public class BooksActivity extends AppCompatActivity  implements ServiceConnecti
         realm.executeTransaction(realm -> this.user = realm.where(User.class).findFirst());
 
         this.myBooksOnly = getIntent().getExtras().getBoolean("myBooks");
+        this.auth = Utils.getAuthorization(user);
 
         getAll();
 
@@ -171,7 +174,7 @@ public class BooksActivity extends AppCompatActivity  implements ServiceConnecti
     }
 
     private void getAll(){
-        disposables.add(bookClient.getAllBooks()
+        disposables.add(bookClient.getAllBooks(auth)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -182,7 +185,7 @@ public class BooksActivity extends AppCompatActivity  implements ServiceConnecti
     }
 
     private void getMyBooks(){
-        disposables.add(bookClient.getAllBooksForUser(user.getUsername())
+        disposables.add(bookClient.getAllBooksForUser(auth, user.getUsername())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(

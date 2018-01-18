@@ -20,6 +20,7 @@ import com.andrei.b_project.net.book.Responses.BookDTO;
 import com.andrei.b_project.net.book.Responses.BookDetails;
 import com.andrei.b_project.net.book.Responses.Rating;
 import com.andrei.b_project.net.book.Responses.TagDTO;
+import com.andrei.b_project.utils.Utils;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -45,6 +46,7 @@ public class SingleBookActivity extends AppCompatActivity {
     private RatingBar ratingBar;
 
     private User user;
+    private String auth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,13 +61,14 @@ public class SingleBookActivity extends AppCompatActivity {
         this.realm = Realm.getDefaultInstance();
 
         realm.executeTransaction(realm -> this.user = realm.where(User.class).findFirst());
+        this.auth = Utils.getAuthorization(user);
 
         getBook(bookId);
 
         this.ratingBar.setOnRatingBarChangeListener((ratingBar, v, b) -> {
             if(!b) return;  // not user input
 
-            disposables.add(bookClient.rateBook(this.user.getUsername(), bookId, new Rating(v))
+            disposables.add(bookClient.rateBook(auth, this.user.getUsername(), bookId, new Rating(v))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(

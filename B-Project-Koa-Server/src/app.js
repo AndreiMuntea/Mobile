@@ -6,8 +6,9 @@ import Cors from 'koa-cors';
 import Convert from 'koa-convert';
 import http from 'http';
 import SocketIo from 'socket.io';
-import {AuthentificationRouter} from './authentification';
+import {AuthentificationRouter, jwtConfig} from './authentification';
 import {BooksRouter} from './books';
+import koaJwt from 'koa-jwt';
 
 // App
 const app = new Koa();
@@ -29,6 +30,10 @@ app.use(BodyParser());
 app.use(Convert(Cors()));
 
 app.use(authentificationRouter.routes()).use(authentificationRouter.allowedMethods());
+
+// From here on the server is secured and for a request to be valid
+// A token should be provided
+app.use(Convert(koaJwt(jwtConfig)));
 app.use(booksRouter.routes()).use(booksRouter.allowedMethods());
 
 server.listen(3000);

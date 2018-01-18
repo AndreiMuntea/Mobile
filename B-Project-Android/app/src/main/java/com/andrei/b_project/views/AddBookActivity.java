@@ -10,9 +10,11 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.andrei.b_project.R;
+import com.andrei.b_project.domain.User;
 import com.andrei.b_project.net.book.BookClient;
 import com.andrei.b_project.net.book.Responses.BookDTO;
 import com.andrei.b_project.net.book.Responses.EmptyResponse;
+import com.andrei.b_project.utils.Utils;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -21,6 +23,7 @@ import java.util.Locale;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
+import io.realm.Realm;
 import retrofit2.HttpException;
 
 public class AddBookActivity extends AppCompatActivity {
@@ -28,12 +31,15 @@ public class AddBookActivity extends AppCompatActivity {
     private static final SimpleDateFormat FORMAT = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
 
     private CompositeDisposable disposables = new CompositeDisposable();
+    private Realm realm;
 
     private ArrayAdapter<String> tagsAdapter;
     private ListView tagsListView;
     private EditText addTagTextField;
 
     private BookClient bookClient;
+    private String auth;
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +51,11 @@ public class AddBookActivity extends AppCompatActivity {
         this.tagsListView = findViewById(R.id.tagsListView);
         this.tagsListView.setAdapter(tagsAdapter);
         this.addTagTextField = findViewById(R.id.addTagTextField);
+        this.realm = Realm.getDefaultInstance();
+
+        realm.executeTransaction(realm -> this.user = realm.where(User.class).findFirst());
+        this.auth = Utils.getAuthorization(this.user);
+
 
         Log.d(TAG, "The onCreate() event");
     }
@@ -120,7 +131,7 @@ public class AddBookActivity extends AppCompatActivity {
             bookDTO.setDescription(description);
             bookDTO.setDate(FORMAT.parse(date));
 
-            disposables.add(bookClient.addBook(bookDTO)
+            disposables.add(bookClient.addBook(auth, bookDTO)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
@@ -141,7 +152,7 @@ public class AddBookActivity extends AppCompatActivity {
 
         for(int i = 0; i < tagsAdapter.getCount(); ++i){
             Log.d(TAG, tagsAdapter.getItem(i));
-            disposables.add(bookClient.tagBook(id, tagsAdapter.getItem(i))
+            disposables.add(bookClient.tagBook(auth, id, tagsAdapter.getItem(i))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(

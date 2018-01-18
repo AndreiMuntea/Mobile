@@ -39,32 +39,32 @@ public class BookClient {
         this.bookResource = retrofit.create(BookResource.class);
     }
 
-    public Observable<List<BookDetails>> getAllBooks(){
-        return bookResource.getAllBooks();
+    public Observable<List<BookDetails>> getAllBooks(String authorization){
+        return bookResource.getAllBooks(authorization);
     }
 
-    public Observable<BookDetails> getBook(String bookId){
-        return bookResource.getBook(bookId);
+    public Observable<BookDetails> getBook(String authorization, String bookId){
+        return bookResource.getBook(authorization, bookId);
     }
 
-    public Observable<Rating> rateBook(String username, String bookId, Rating rating){
-        return bookResource.rateBook(username, bookId, rating);
+    public Observable<Rating> rateBook(String authorization, String username, String bookId, Rating rating){
+        return bookResource.rateBook(authorization, username, bookId, rating);
     }
 
-    public Observable<List<BookDetails>> getAllBooksForUser(String username){
-        return bookResource.getAllBooksForUser(username);
+    public Observable<List<BookDetails>> getAllBooksForUser(String authorization, String username){
+        return bookResource.getAllBooksForUser(authorization, username);
     }
 
-    public Observable<BooksList> getAllBooksByAuthor(String authorName){
-        return bookResource.getAllBooksByAuthor(authorName);
+    public Observable<BooksList> getAllBooksByAuthor(String authorization, String authorName){
+        return bookResource.getAllBooksByAuthor(authorization, authorName);
     }
 
-    public Observable<BookDTO> addBook(BookDTO book){
-        return bookResource.addBook(book);
+    public Observable<BookDTO> addBook(String authorization, BookDTO book){
+        return bookResource.addBook(authorization, book);
     }
 
 
-    public Observable<EmptyResponse> tagBook(String bookId, String tag){
-        return bookResource.tagBook(bookId, tag);
+    public Observable<EmptyResponse> tagBook(String authorization, String bookId, String tag){
+        return bookResource.tagBook(authorization, bookId, tag);
     }
 }
