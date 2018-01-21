@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {AppRegistry, View, StyleSheet, Text, TextInput, TouchableOpacity, FlatList} from 'react-native';
+import {AppRegistry, View, StyleSheet, Text, TextInput, TouchableOpacity, FlatList, Alert} from 'react-native';
 import {AirbnbRating} from 'react-native-ratings';
 
 import TextFieldComponent from "../InlineComponents/TextFieldComponent"
@@ -35,7 +35,7 @@ export default class SingleBookComponent extends Component{
         let username = this.store.getState().userReducer.username;
         let bookId = this.state.id;
 
-        this.store.dispatch(rateBook(username, bookId, rating))
+        this.store.dispatch(rateBook(this.store.getState().userReducer.token, username, bookId, rating))
           .then(() => {
             // SUCCESS
             if (this.store.getState().bookReducer.data != null){

@@ -33,7 +33,7 @@ export const callServerPutAPI = async(suffix, body, headers) =>{
 }
 
 export const callServerGetAPI = async(suffix, body, headers) =>{
-    let result = await fetch(serverUrl + suffix)
+    let result = await fetch(serverUrl + suffix, {headers})
     .then((response) => response.json())
     .then((response) => {
         return response;

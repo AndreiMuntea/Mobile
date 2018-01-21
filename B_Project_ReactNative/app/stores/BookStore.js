@@ -149,8 +149,9 @@ export const getBooksForUser = (token, username) => async(dispatch) => {
     var locals = user.books;
     dispatch({type:GET_ALL_BOOKS_FOR_USER_FULFILLED, payload:locals});
 
+    console.log("Got local books");
     var result = await callServerGetAPI("/books/get/username/" + username, null, authHeaders(token));
-
+    console.log("Got server books");
     if (result.status == false || result.error != undefined){
         dispatch({type: GET_ALL_BOOKS_FOR_USER_ERROR, payload:result});
     } else {
